@@ -1,0 +1,221 @@
+/* COMPONENTES BASICOS */
+
+body {
+  background: #eef1f5;
+  font-family: 'Roboto';
+  margin: 0;
+  padding: 0;
+}
+
+body:focus {
+  outline: none;
+}
+
+
+/* HEADER */
+.header {
+  background: linear-gradient(90deg, #1e5fa8, #2c77c4);
+  color: white;
+  padding: 18px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.header .logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.header nav a {
+  margin-left: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.header nav a:hover {
+  opacity: 0.8;
+}
+
+/* MAIN */
+.main {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  width: 100%;
+  max-width: 750px;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* TITULO */
+h1 {
+  text-align: center;
+  color: #2c77c4;
+  margin-bottom: 10px;
+}
+
+.card p {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #666;
+}
+
+/* INPUT - ICONS*/
+.input-icon {
+  display: flex;
+  align-items: center;
+  background: #f4f6f9;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #dce1e7;
+  transition: border 0.3s;
+}
+
+.input-icon:hover {
+  border: 1px solid #2c77c4;
+}
+
+.input-icon span {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.input-icon input,
+.input-icon select {
+  border: none;
+  outline: none;
+  flex: 1;
+  background: transparent;
+  font-size: 14px;
+}
+
+/* CPF */
+.cpf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.valido {
+  color: green;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+/* DOCUMENTOS */
+.docs {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.docs button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: #2c77c4;
+  color: white;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.docs button:hover {
+  background: #1e5fa8;
+}
+
+/* BENEFÍCIOS */
+.beneficios {
+  display: flex;
+  justify-content: space-around;
+  margin: 25px 0;
+  text-align: center;
+}
+
+.beneficios div {
+  flex: 1;
+}
+
+.beneficios span {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 8px;
+  color: #2c77c4;
+}
+
+.beneficios p {
+  font-size: 14px;
+  color: #444;
+}
+
+/* BOTÕES */
+.actions {
+  display: flex;
+  gap: 15px;
+}
+
+.voltar {
+  flex: 1;
+  padding: 12px;
+  background: #ddd;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.voltar:hover {
+  background: #bbb;
+}
+
+.enviar {
+  flex: 2;
+  padding: 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.enviar:hover {
+  background: #218838;
+}
+
+.form h3 {
+  margin: 20px 0 10px;
+  color: #2c77c4;
+  font-size: 16px;
+  border-left: 4px solid #2c77c4;
+  padding-left: 8px;
+}
+.input-icon svg {
+  margin-right: 10px;
+  color: #2c77c4;
+  font-size: 18px;
+}
+
+.icon {
+  width: 40px;
+  height: auto;
+}
+
