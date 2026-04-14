@@ -1,7 +1,7 @@
 <div style="font-family: Arial, sans-serif; line-height: 1.6;">
 
   <h1 align="center" style="color:#4A90E2;">
-    📄 Sistema de Digitalização de Documentos Cartoriais
+     Sistema de Digitalização de Documentos Cartoriais
   </h1>
 
   <p align="center">
@@ -14,7 +14,7 @@
 
   <hr>
 
-  <h2 style="color:#333;">📌 Sobre o Projeto</h2>
+  <h2 style="color:#333;"> --> Sobre o Projeto</h2>
   <p>
     Este projeto tem como objetivo desenvolver uma solução tecnológica para a 
     <strong>digitalização, organização e gerenciamento</strong> de documentos de cartórios, 
@@ -34,7 +34,7 @@
 
   <hr>
 
-  <h2 style="color:#333;">👨‍🏫 Orientação</h2>
+  <h2 style="color:#333;"> --> Orientação</h2>
   <ul>
     <li>👨‍🏫 Prof.(a): <strong>[Davi Villar]</strong></li>
     <li>👨‍🏫 Prof.(a): <strong>[Ricardo Palhares]</strong></li>
@@ -42,62 +42,9 @@
 
   <hr>
 
-  <h2 style="color:#333;">👥 Integrantes</h2>
-
-<div style="
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
-">
-
-  <div style="
-    background: #f5f5f5;
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    text-align: center;
-    min-width: 180px;
-  ">
-    👩‍💻 <strong>Julia Bitencourt</strong>
-  </div>
-
-  <div style="
-    background: #f5f5f5;
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    text-align: center;
-    min-width: 180px;
-  ">
-    👩‍💻 <strong>Arthur Rilber</strong>
-  </div>
-
-  <div style="
-    background: #f5f5f5;
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    text-align: center;
-    min-width: 180px;
-  ">
-    👩‍💻 <strong>Yasmin Carvalho</strong>
-  </div>
-
-  <div style="
-    background: #f5f5f5;
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    text-align: center;
-    min-width: 180px;
-  ">
-    👩‍💻 <strong>Rafaela Sousa</strong>
-  </div>
-
 </div>
 
-  <h2 display="flex" style="color:#333;">👥 Integrantes</h2>
+  <h2 display="flex" style="color:#333;"> --> Integrantes</h2>
   <ul>
     <li>👩‍💻 <strong>Julia Bitencourt</strong></li>
     <li>👩‍💻 <strong>Arthur Rilber</strong></li>
@@ -107,7 +54,7 @@
 
   <hr>
 
-  <h2 style="color:#333;">🚀 Tecnologias Utilizadas</h2>
+  <h2 style="color:#333;"> --> Tecnologias Utilizadas</h2>
    <p align="center">
     <img src="https://img.shields.io/badge/React-JS-61DAFB?style=for-the-badge&logo=react&logoColor=black">
     <img src="https://img.shields.io/badge/Java-Backend-red?style=for-the-badge&logo=java&logoColor=white">
