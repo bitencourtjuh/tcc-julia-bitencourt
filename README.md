@@ -14,7 +14,7 @@
 
   <hr>
 
-  <h2 style="color:#333;"> --> Sobre o Projeto</h2>
+  <h2 style="color:#333;"> --- Sobre o Projeto</h2>
   <p>
     Este projeto tem como objetivo desenvolver uma solução tecnológica para a 
     <strong>digitalização, organização e gerenciamento</strong> de documentos de cartórios, 
@@ -34,27 +34,27 @@
 
   <hr>
 
-  <h2 style="color:#333;"> --> Orientação</h2>
+  <h2 style="color:#333;"> --- Orientação</h2>
   <ul>
-    <li>👨‍🏫 Prof.(a): <strong>[Davi Villar]</strong></li>
-    <li>👨‍🏫 Prof.(a): <strong>[Ricardo Palhares]</strong></li>
+    <li> Prof.(o): <strong>Davi Villar</strong></li>
+    <li> Prof.(o): <strong>Ricardo Palhares</strong></li>
   </ul>
 
   <hr>
 
 </div>
 
-  <h2 display="flex" style="color:#333;"> --> Integrantes</h2>
+  <h2 display="flex" style="color:#333;"> --- Integrantes</h2>
   <ul>
-    <li>👩‍💻 <strong>Julia Bitencourt</strong></li>
-    <li>👩‍💻 <strong>Arthur Rilber</strong></li>
-    <li>👩‍💻 <strong>Yasmin Carvalho</strong></li>
-    <li>👩‍💻 <strong>Rafaela Sousa</strong></li>
+    <li> <strong>Julia Bitencourt</strong></li>
+    <li> <strong>Arthur Rilber</strong></li>
+    <li> <strong>Yasmin Carvalho</strong></li>
+    <li> <strong>Rafaela Sousa</strong></li>
   </ul>
 
   <hr>
 
-  <h2 style="color:#333;"> --> Tecnologias Utilizadas</h2>
+  <h2 style="color:#333;"> --- Tecnologias Utilizadas</h2>
    <p align="center">
     <img src="https://img.shields.io/badge/React-JS-61DAFB?style=for-the-badge&logo=react&logoColor=black">
     <img src="https://img.shields.io/badge/Java-Backend-red?style=for-the-badge&logo=java&logoColor=white">
