@@ -43,6 +43,61 @@
   <hr>
 
   <h2 style="color:#333;">👥 Integrantes</h2>
+
+<div style="
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+">
+
+  <div style="
+    background: #f5f5f5;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    min-width: 180px;
+  ">
+    👩‍💻 <strong>Julia Bitencourt</strong>
+  </div>
+
+  <div style="
+    background: #f5f5f5;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    min-width: 180px;
+  ">
+    👩‍💻 <strong>Arthur Rilber</strong>
+  </div>
+
+  <div style="
+    background: #f5f5f5;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    min-width: 180px;
+  ">
+    👩‍💻 <strong>Yasmin Carvalho</strong>
+  </div>
+
+  <div style="
+    background: #f5f5f5;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    min-width: 180px;
+  ">
+    👩‍💻 <strong>Rafaela Sousa</strong>
+  </div>
+
+</div>
+
+  <h2 display="flex" style="color:#333;">👥 Integrantes</h2>
   <ul>
     <li>👩‍💻 <strong>Julia Bitencourt</strong></li>
     <li>👩‍💻 <strong>Arthur Rilber</strong></li>
@@ -53,11 +108,12 @@
   <hr>
 
   <h2 style="color:#333;">🚀 Tecnologias Utilizadas</h2>
-  <p align="center">
-    <img src="https://img.shields.io/badge/HTML-5-orange?style=for-the-badge">
-    <img src="https://img.shields.io/badge/CSS-3-blue?style=for-the-badge">
-    <img src="https://img.shields.io/badge/JavaScript-yellow?style=for-the-badge">
-    <img src="https://img.shields.io/badge/MySQL-Database-blue?style=for-the-badge">
+   <p align="center">
+    <img src="https://img.shields.io/badge/React-JS-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+    <img src="https://img.shields.io/badge/Java-Backend-red?style=for-the-badge&logo=java&logoColor=white">
+    <img src="https://img.shields.io/badge/MySQL-Database-blue?style=for-the-badge&logo=mysql&logoColor=white">
+    <img src="https://img.shields.io/badge/Blockchain-Security-purple?style=for-the-badge">
+    <img src="https://img.shields.io/badge/Metadados-Data-green?style=for-the-badge">
   </p>
 
 </div>
