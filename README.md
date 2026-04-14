@@ -1,8 +1,3 @@
-# tcc-julia-bitencourt
-
-Aulas de Trabalho de Conclusão de Curso (TCC) com os professores Davi Villar
-e Ricardo Palhares
-
 <hr>
 
 <div style="font-family: Arial, sans-serif; line-height: 1.6;">
