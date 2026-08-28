@@ -13,11 +13,10 @@ import { getDocumentos } from "../services/api";
 export function Dashboard() {
   const { dispatch, state } = useApp();
   const usuario = useUsuario();
-
+ // Pré-seleciona o documento validado para demonstração
   useEffect(() => {
     getDocumentos().then((r) => {
-      dispatch({ type: "SET_DOCUMENTOS", payload: r.data });
-      // Pré-seleciona o primeiro documento validado para demonstração
+      dispatch({ type: "SET_DOCUMENTOS", payload: r.data }); 
       if (!state.documentoAtivo) {
         const primeiro = r.data.find((d) => d.dadosExtraidos && d.blockchain);
         if (primeiro) dispatch({ type: "SET_DOCUMENTO_ATIVO", payload: primeiro });

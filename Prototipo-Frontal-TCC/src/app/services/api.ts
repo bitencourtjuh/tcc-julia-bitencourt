@@ -1,12 +1,9 @@
-// Simula chamadas ao backend Java Spring Boot
-// Em produção, substituir BASE_URL pela URL real do servidor
-
 const BASE_URL = "http://localhost:8080/api";
 const DELAY_MS = 800;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-// ─── Tipos ────────────────────────────────────────────────────────────────────
+// ─── Tipos ────
 
 export type UserRole = "ADMIN" | "TABELIAO" | "ESCREVENTE";
 export type DocumentStatus = "VALIDADO" | "EM_PROCESSO" | "REJEITADO" | "AGUARDANDO";
@@ -75,7 +72,7 @@ export interface ApiResponse<T> {
   mensagem: string;
 }
 
-// ─── Mock DB ──────────────────────────────────────────────────────────────────
+// ─── Mock DB(Simula o banco de dados) ───────
 
 const USUARIOS_MOCK: Record<string, Usuario> = {
   "admin@cartorio.com": {
@@ -173,8 +170,7 @@ function formatDate(): string {
   return new Date().toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
-// ─── API Functions ─────────────────────────────────────────────────────────────
-// Cada função simula uma chamada HTTP ao backend Java/Spring Boot
+// ─── API Functions(onde colocar o java)─────────
 
 export async function login(email: string, senha: string): Promise<ApiResponse<Usuario>> {
   await delay(DELAY_MS);
@@ -212,16 +208,16 @@ export async function uploadDocumento(
   arquivo: File,
   onProgress: (stage: string) => void
 ): Promise<ApiResponse<Documento>> {
-  // Estágio 1: Upload
+  // Upload
   onProgress("upload");
   await delay(1200);
 
-  // Estágio 2: Extração de dados pela IA
+  // Extração de dados pela IA
   onProgress("ia");
   await delay(1800);
   const dados = gerarDadosExtraidos(arquivo.name);
 
-  // Estágio 3: Registro na Blockchain
+  // Registro na Blockchain
   onProgress("blockchain");
   await delay(1500);
 

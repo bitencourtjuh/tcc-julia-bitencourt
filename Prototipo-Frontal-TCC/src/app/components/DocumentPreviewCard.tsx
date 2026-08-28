@@ -48,7 +48,7 @@ export function DocumentPreviewCard() {
               exit={{ opacity: 0 }}
               className="space-y-4"
             >
-              {/* Simulação visual do documento */}
+              {/* (Melhorar isso depois no frontend) Simulação visual do documento */}
               <div className="relative aspect-[3/4] bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-dashed border-gray-300 overflow-hidden">
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
                   <div className="w-full h-full bg-white shadow-lg rounded-lg p-5 space-y-3">

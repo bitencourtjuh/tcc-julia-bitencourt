@@ -100,7 +100,7 @@ export function LoginPage() {
 
           <div className="pt-4 border-t border-white/20">
             <p className="text-white/50 text-xs">
-              © 2026 Cartório Digital · TCC — Engenharia de Software
+              © 2026 AplicaçãoDigital · TCC — Desenvolvimento de Sistemas
             </p>
           </div>
         </motion.div>

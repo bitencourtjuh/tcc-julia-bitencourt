@@ -50,7 +50,7 @@ export function MainLayout() {
           </div>
           <div className="mt-8 pt-8 border-t text-center">
             <p className="text-sm text-muted-foreground">
-              © 2026 Cartório Digital — TCC Engenharia de Software · Todos os direitos reservados.
+             © 2026 AplicaçãoDigital · TCC — Desenvolvimento de Sistemas · Todos os direitos reservados.
             </p>
           </div>
         </div>

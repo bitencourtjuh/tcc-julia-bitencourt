@@ -39,12 +39,12 @@
   --radius: 0.75rem;
   --sidebar: #ffffff;
   --sidebar-foreground: #1e293b;
-  --sidebar-primary: #0d9488;
+  --sidebar-primary: #ffffff;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f1f5f9;
   --sidebar-accent-foreground: #1e293b;
   --sidebar-border: #e2e8f0;
-  --sidebar-ring: #0d9488;
+  --sidebar-ring: #ffffff;
 }
 
 .dark {

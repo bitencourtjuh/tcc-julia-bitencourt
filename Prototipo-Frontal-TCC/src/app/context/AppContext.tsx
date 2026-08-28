@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer, useEffect, ReactNode } from "react";
 import type { Usuario, Documento } from "../services/api";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types/ Classes ───────
 
 export interface Notificacao {
   id: number;
@@ -34,7 +34,7 @@ type AppAction =
   | { type: "MARCAR_NOTIFICACAO_LIDA"; payload: number }
   | { type: "MARCAR_TODAS_LIDAS" };
 
-// ─── Reducer ──────────────────────────────────────────────────────────────────
+// ─── Reducer ─────────
 
 let nextNotifId = 10;
 
@@ -90,7 +90,7 @@ function reducer(state: AppState, action: AppAction): AppState {
   }
 }
 
-// ─── Context ──────────────────────────────────────────────────────────────────
+// ─── Context ───
 
 interface AppContextValue {
   state: AppState;
@@ -101,6 +101,7 @@ const AppContext = createContext<AppContextValue | null>(null);
 
 const STORAGE_KEY = "cartorio_usuario";
 
+// Função roda principalmente no localStorage(futuramente deve ser trocado por instabilidade)
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, {
     usuario: null,
@@ -110,7 +111,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     uploadStage: "idle",
   });
 
-  // Restaura sessão do localStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -119,11 +119,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         dispatch({ type: "LOGIN", payload: usuario });
       }
     } catch {
-      // sessão inválida
+
     }
   }, []);
 
-  // Persiste sessão no localStorage
   useEffect(() => {
     if (state.usuario) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.usuario));

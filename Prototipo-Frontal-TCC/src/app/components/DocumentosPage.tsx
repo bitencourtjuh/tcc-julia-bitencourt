@@ -39,7 +39,7 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
             </DialogHeader>
 
             <div className="space-y-6 mt-4">
-              {/* Status e metadados */}
+              {/* Status e metadados(parte que odeio) */}
               <div className="flex flex-wrap gap-2 items-center">
                 <Badge className={STATUS_CONFIG[doc.status]?.color}>{STATUS_CONFIG[doc.status]?.label}</Badge>
                 <span className="text-sm text-muted-foreground">{doc.tamanho}</span>
@@ -60,7 +60,7 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
                 </div>
               </div>
 
-              {/* Dados Extraídos pela IA */}
+              {/* Dados Extraídos pela IA(verificação) */}
               {doc.dadosExtraidos && (
                 <>
                   <Separator />
@@ -90,7 +90,7 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
                 </>
               )}
 
-              {/* Blockchain */}
+              {/* Blockchain - diferencial da nossa aplicação */}
               {doc.blockchain && (
                 <>
                   <Separator />
