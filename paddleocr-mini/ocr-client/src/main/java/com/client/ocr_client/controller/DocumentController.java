@@ -1,7 +1,7 @@
 package com.client.ocr_client.controller;
 
 import com.client.ocr_client.service.OcrClient;
-import com.client.ocr_client.dto.OCRResponse;
+import com.client.ocr_client.dto.Invoice;
 import com.client.ocr_client.service.OcrService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +23,7 @@ public class DocumentController {
     }
 
      @PostMapping("/ocr")
-    public OCRResponse uploadDocument(@RequestParam("file") MultipartFile file) throws Exception {
+    public Invoice uploadDocument(@RequestParam("file") MultipartFile file) throws Exception {
         return ocrService.processDocument(file);
     }
 
