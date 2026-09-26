@@ -2,6 +2,7 @@ package com.client.ocr_client.controller;
 
 import com.client.ocr_client.service.OcrClient;
 import com.client.ocr_client.dto.OCRResponse;
+import com.client.ocr_client.service.OcrService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,15 +16,15 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/documents")
 public class DocumentController {
 
-    private final OcrClient ocrClient;
+    private final OcrService ocrService;
 
-    public DocumentController(OcrClient ocrClient) {
-        this.ocrClient = ocrClient;
+    public DocumentController(OcrService ocrService) {
+        this.ocrService = ocrService;
     }
 
      @PostMapping("/ocr")
     public OCRResponse uploadDocument(@RequestParam("file") MultipartFile file) throws Exception {
-        return ocrClient.sendToOcr(file);
+        return ocrService.processDocument(file);
     }
 
     @GetMapping("/test")
