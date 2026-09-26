@@ -1,5 +1,7 @@
 package com.client.ocr_client.service;
 
+import com.client.ocr_client.dto.OCRResponse;
+
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ public class OcrClient {
                 .build();
     }
 
-    public String sendToOcr(MultipartFile file) throws Exception {
+    public OCRResponse sendToOcr(MultipartFile file) throws Exception {
 
         ByteArrayResource resource =
                 new ByteArrayResource(file.getBytes()) {
@@ -40,6 +42,6 @@ public class OcrClient {
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(body)
                 .retrieve()
-                .body(String.class);
+                .body(OCRResponse.class);
     }
 }
