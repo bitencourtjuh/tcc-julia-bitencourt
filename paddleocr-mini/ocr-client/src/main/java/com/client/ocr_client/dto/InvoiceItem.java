@@ -2,32 +2,36 @@ package com.client.ocr_client.dto;
 
 import java.math.BigDecimal;
 
-public class InvoiceItem{
+public class InvoiceItem {
 
-  private String description;
+    private String description;
 
-  private int quantity;
+    private int quantity;
 
-  private BigDecimal amount;
+    private BigDecimal amount;
 
-  private String getDescription(){
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  private void setDescription(String description){
-    this.description = description;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-  public int getQuantity(){
-    return quantity;
-  }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
-  public BigDecimal getAmount(){
-    return amount;
-  }
+    public int getQuantity() {
+        return quantity;
+    }
 
-  public void setAmount(BigDecimal amount){
-    this.amount = amount;
-  }
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
 }

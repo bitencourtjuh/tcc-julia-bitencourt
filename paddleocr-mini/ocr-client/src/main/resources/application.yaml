@@ -1,3 +1,9 @@
+
 spring:
   application:
     name: ocr-client
+  main:
+    web-application-type: servlet
+server:
+  tomcat:
+    connection-timeout: 300000
