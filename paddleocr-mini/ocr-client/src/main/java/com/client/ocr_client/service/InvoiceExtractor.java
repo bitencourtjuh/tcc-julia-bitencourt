@@ -1,43 +1,195 @@
 package com.client.ocr_client.service;
 
-import com.client.ocr_client.dto.Invoice;
-import com.client.ocr_client.dto.OCRResponse;
-import org.springframework.stereotype.Service;
-
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.stereotype.Service;
+
+import com.client.ocr_client.dto.Invoice;
+import com.client.ocr_client.dto.OCRResponse;
 
 @Service
-public class InvoiceExtractor{
-  public Invoice extract(OCRResponse ocrResponse){
+public class InvoiceExtractor {
 
-    String text = ocrResponse.getPages().get(0).getText();
+    public Invoice extract(OCRResponse ocrResponse) {
 
-    Invoice invoice = new Invoice();
+        String text = ocrResponse.getPages().get(0).getText();
 
-    extractBasicInformation(text, invoice);
-    extractFinancialInformation(text, invoice);
-    extractAdditionalInformation(text, invoice);
+        Document document = (Document) Jsoup.parse(text);
 
-    return invoice;
-  }
+        Invoice invoice = new Invoice();
 
-  private void extractBasicInformation(String text, Invoice invoice){
-    Pattern pattern = Pattern.compile("#\\s*([A-Z]{2}\\d{2}-\\d{3})");
+        extractBasicInformation(text, document, invoice);
+        extractFinancialInformation(text, document, invoice);
+        extractAdditionalInformation(text, invoice);
 
-    Matcher matcher = pattern.matcher(text);
-
-    if(matcher.find()){
-      invoice.setInvoiceNumber(matcher.group(1));
+        return invoice;
     }
-  }
 
-  private void extractFinancialInformation(String text, Invoice invoice){
+    private void extractBasicInformation(String text, Document document, Invoice invoice) {
 
-  }
+        Pattern pattern = Pattern.compile("#\\s*([A-Z]{2}\\d{2}-\\d{3})");
 
-  private void extractAdditionalInformation(String text, Invoice invoice){
+        Matcher matcher = pattern.matcher(text);
 
-  }
+        if (matcher.find()) {
+            invoice.setInvoiceNumber(matcher.group(1));
+        }
+
+        /* invoice.setDescription(
+                extractTableValue(document, "projeto de lei")
+        );
+        invoice.setRecipient(
+                extractTableValue(document, "Enviar para")
+        );*/
+        invoice.setPaymentTerms(
+                extractTableValue(document, "Termos de pagamento:")
+        );
+
+        invoice.setOrderNumber(
+                extractTableValue(document, "Número do pedido:")
+        );
+
+        invoice.setDate(
+                extractDate(
+                        extractTableValue(document, "Data:")
+                )
+        );
+
+        invoice.setDueDate(
+                extractDate(
+                        extractTableValue(document, "Data de vencimento:")
+                )
+        );
+
+    }
+
+    private String extractTableValue(Document document, String label) {
+        Elements cells = document.select("td");
+
+        for (int i = 0; i < cells.size() - 1; i++) {
+
+            String cellText = cells.get(i).text().trim();
+
+            if (cellText.equals(label)) {
+                return cells.get(i + 1).text().trim();
+            }
+        }
+
+        return null;
+    }
+
+    private LocalDate extractDate(String value) {
+
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        DateTimeFormatter formatter
+                = DateTimeFormatter.ofPattern(
+                        "MMM d, yyyy",
+                        Locale.ENGLISH
+                );
+
+        return LocalDate.parse(value, formatter);
+    }
+
+    private BigDecimal parseMoney(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        String nomarlized = value
+                .replace("US$", "")
+                .replace("R$", "")
+                .replace(",", ".")
+                .replace(" ", "");
+
+        return new BigDecimal(nomarlized);
+    }
+
+    private String extractFinancialTableValue(Document document, String label) {
+
+        Elements cells = document.select("td");
+
+        for (int i = 0; i < cells.size() - 1; i++) {
+            String cellText = cells.get(i).text().trim();
+
+            if (cellText.equals(label)) {
+                return cells.get(i + 1).text().trim();
+            }
+
+        }
+
+        return null;
+    }
+
+    private String findCellContaining(Document document, String text) {
+
+        Elements cells = document.select("td");
+
+        for (Element cell : cells) {
+
+            String cellText = cell.text().trim();
+
+            if (cellText.contains(text)) {
+                return cellText;
+            }
+
+        }
+        return null;
+    }
+
+    private void extractFinancialInformation(String text, Document document, Invoice invoice) {
+
+        String subTotalValue = extractTableValue(document, "Subtotal:");
+
+        invoice.setSubtotal(parseMoney(subTotalValue));
+
+        String totalValue
+                = extractTableValue(document, "Saldo devedor:");
+
+        invoice.setTotal(parseMoney(totalValue));
+
+        String taxLabel
+                = findCellContaining(document, "Imposto");
+
+        if (taxLabel != null) {
+            invoice.setTaxRate(
+                    extractTaxRate(taxLabel)
+            );
+
+            String taxAmount
+                    = extractTableValue(document, taxLabel);
+
+            invoice.setTaxAmount(parseMoney(taxAmount));
+        }
+    }
+
+    private BigDecimal extractTaxRate(String label) {
+
+        Pattern pattern
+                = Pattern.compile("\\((\\d+(?:\\.\\d+)?)%\\)");
+
+        Matcher matcher = pattern.matcher(label);
+
+        if (matcher.find()) {
+            return new BigDecimal(matcher.group(1));
+        }
+
+        return null;
+    }
+
+    private void extractAdditionalInformation(String text, Invoice invoice) {
+
+    }
+
 }
