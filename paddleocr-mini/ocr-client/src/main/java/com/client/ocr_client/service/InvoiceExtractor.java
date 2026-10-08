@@ -194,6 +194,13 @@ public class InvoiceExtractor {
 
     private void extractAdditionalInformation(String text, Invoice invoice) {
 
+        invoice.setNotes(
+                extractSection(text, "Notas:", "Termos:")
+        );
+
+        invoice.setTerms(
+                extractSection(text, "Termos:", "")
+        );
     }
 
     private void extractItems(Document document, Invoice invoice) {
@@ -298,6 +305,31 @@ public class InvoiceExtractor {
 
         invoice.setRecipient(
                 firstRowsCells.get(1).text().trim());
+    }
+
+    private String extractSection(String text, String startLabel, String endLabel) {
+        int start = text.indexOf(startLabel);
+
+        if (start == -1) {
+            return null;
+        }
+
+        start += startLabel.length();
+
+        int end = text.indexOf(endLabel, start);
+
+        if (endLabel == null || endLabel.isEmpty()) {
+            end = text.length();
+        } else {
+            end = text.indexOf(endLabel, start);
+
+            if (end == -1) {
+                end = text.length();
+            }
+        }
+
+        String value = text.substring(start, end).trim();
+        return value.isEmpty() ? null : value;
     }
 
 }
