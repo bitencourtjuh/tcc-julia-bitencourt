@@ -2,6 +2,7 @@ package com.client.ocr_client.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Invoice {
@@ -14,7 +15,7 @@ public class Invoice {
     private LocalDate dueDate;
     private String orderNumber;
     private BigDecimal balanceDue;
-    private List<InvoiceItem> items;
+    private List<InvoiceItem> items = new ArrayList<>();
     private BigDecimal subtotal;
     private BigDecimal taxRate;
     private BigDecimal taxAmount;

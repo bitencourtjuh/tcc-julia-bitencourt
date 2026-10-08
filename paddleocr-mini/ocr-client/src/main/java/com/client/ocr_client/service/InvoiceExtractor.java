@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import com.client.ocr_client.dto.Invoice;
+import com.client.ocr_client.dto.InvoiceItem;
 import com.client.ocr_client.dto.OCRResponse;
 
 @Service
@@ -30,6 +31,8 @@ public class InvoiceExtractor {
         extractBasicInformation(text, document, invoice);
         extractFinancialInformation(text, document, invoice);
         extractAdditionalInformation(text, invoice);
+        extractItems(document, invoice);
+        extractFinancialInformation(text, document, invoice);
 
         return invoice;
     }
@@ -192,4 +195,23 @@ public class InvoiceExtractor {
 
     }
 
+    private void extractItems(Document document, Invoice invoice) {
+
+        Elements tables = document.select("table");
+
+        Element itemsTable = tables.get(1);
+
+        Elements rows = itemsTable.select("tr");
+
+        Element itemRow = rows.get(1);
+
+        Elements cells = itemRow.select("td");
+
+        InvoiceItem item = new InvoiceItem();
+
+        item.setDescription(cells.get(0).text().trim());
+        item.setQuantity(Integer.parseInt(cells.get(1).text().trim()));
+        item.setAmount(parseMoney(cells.get(3).text().trim()));
+        invoice.getItems().add(item);
+    }
 }
