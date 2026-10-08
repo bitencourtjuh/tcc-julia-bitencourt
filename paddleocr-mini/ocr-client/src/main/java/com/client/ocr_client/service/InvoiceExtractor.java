@@ -32,6 +32,7 @@ public class InvoiceExtractor {
         extractFinancialInformation(text, document, invoice);
         extractAdditionalInformation(text, invoice);
         extractItems(document, invoice);
+        extractDescriptionAndRecipient(document, invoice);
         extractFinancialInformation(text, document, invoice);
 
         return invoice;
@@ -263,4 +264,40 @@ public class InvoiceExtractor {
 
         return null;
     }
+
+    private Element findInvoiceInformationTable(Document document) {
+        Elements tables = document.select("table");
+
+        if (tables.isEmpty()) {
+            return null;
+        }
+
+        return tables.get(0);
+    }
+
+    private void extractDescriptionAndRecipient(Document document, Invoice invoice) {
+
+        Element informationTable = findInvoiceInformationTable(document);
+
+        if (informationTable == null) {
+            return;
+        }
+
+        Elements firstRowsCells
+                = informationTable
+                        .select("tr")
+                        .first()
+                        .select("td");
+
+        if (firstRowsCells.size() < 2) {
+            return;
+        }
+
+        invoice.setDescription(
+                firstRowsCells.get(0).text().trim());
+
+        invoice.setRecipient(
+                firstRowsCells.get(1).text().trim());
+    }
+
 }
