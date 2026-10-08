@@ -197,9 +197,11 @@ public class InvoiceExtractor {
 
     private void extractItems(Document document, Invoice invoice) {
 
-        Elements tables = document.select("table");
+        Element itemsTable = findItemsTable(document);
 
-        Element itemsTable = tables.get(1);
+        if (itemsTable == null) {
+            return;
+        }
 
         Elements rows = itemsTable.select("tr");
 
@@ -242,5 +244,23 @@ public class InvoiceExtractor {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    private Element findItemsTable(Document document) {
+
+        Elements tables = document.select("table");
+
+        for (Element table : tables) {
+            String tableText = table.text().toLowerCase();
+
+            if (tableText.contains("item")
+                    && tableText.contains("quantidade")
+                    && tableText.contains("quantia")) {
+
+                return table;
+            }
+        }
+
+        return null;
     }
 }
