@@ -47,7 +47,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#172b3a] via-[#243d50] to-[#134e4a] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#5E1F38] via-[#782848] to-[#3A1322] flex items-center justify-center p-4">
       {/* Background decorativo */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(6)].map((_, i) => (
@@ -114,10 +114,10 @@ export function LoginPage() {
           <Card className="shadow-2xl border-white/10 bg-white/95 backdrop-blur">
             <CardHeader className="space-y-2">
               <div className="flex items-center gap-3 lg:hidden mb-2">
-                <div className="h-10 w-10 rounded-xl bg-[#172b3a] flex items-center justify-center">
+                <div className="h-10 w-10 rounded-xl bg-[#5E1F38] flex items-center justify-center">
                   <FileText className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-lg font-semibold text-[#172b3a]">Cartório Digital</span>
+                <span className="text-lg font-semibold text-[#5E1F38]">Cartório Digital</span>
               </div>
               <CardTitle className="text-2xl">Entrar no sistema</CardTitle>
               <CardDescription>
@@ -135,7 +135,7 @@ export function LoginPage() {
                       key={c.email}
                       type="button"
                       onClick={() => preencherDemo(c)}
-                      className="text-xs px-3 py-1.5 rounded-full border border-[#172b3a]/30 text-[#172b3a] hover:bg-[#e9e1d1] transition-colors"
+                      className="text-xs px-3 py-1.5 rounded-full border border-[#5E1F38]/30 text-[#5E1F38] hover:bg-[#e9e1d1] transition-colors"
                     >
                       {c.label}
                     </button>
@@ -194,7 +194,7 @@ export function LoginPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#172b3a] hover:bg-[#243d50] h-11"
+                  className="w-full bg-[#5E1F38] hover:bg-[#782848] h-11"
                   disabled={carregando}
                 >
                   {carregando ? (

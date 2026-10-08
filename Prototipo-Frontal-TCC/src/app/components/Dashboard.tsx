@@ -28,7 +28,7 @@ export function Dashboard() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 lg:px-8">
-      <section className="relative mb-7 overflow-hidden rounded-[28px] bg-[#172b3a] px-6 py-8 text-white shadow-[0_20px_60px_rgba(23,43,58,.16)] sm:px-10 sm:py-10">
+      <section className="relative mb-7 overflow-hidden rounded-[28px] bg-[#5E1F38] px-6 py-8 text-white shadow-[0_20px_60px_rgba(94,31,56,.16)] sm:px-10 sm:py-10">
         <div className="absolute -right-24 -top-28 h-72 w-72 rounded-full border border-[#b28a4a]/30" />
         <div className="absolute right-8 top-10 h-44 w-44 rounded-full border border-white/10" />
         <div className="absolute bottom-0 right-0 h-1/2 w-1/2 bg-[radial-gradient(circle_at_center,rgba(178,138,74,.16),transparent_65%)]" />

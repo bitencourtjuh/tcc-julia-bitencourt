@@ -44,7 +44,7 @@ export function StatsCards() {
       value: stats.totalValidados.toLocaleString(),
       icon: FileText,
       bgColor: "bg-[#e9e1d1]",
-      iconColor: "text-[#172b3a]",
+      iconColor: "text-[#5E1F38]",
       change: stats.crescimentoValidados,
     },
     {

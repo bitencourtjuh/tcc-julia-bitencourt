@@ -63,16 +63,16 @@ export function AuthenticationCard() {
         {doc?.blockchain && (
           <div className="p-4 bg-[#e9e1d1] rounded-lg space-y-2">
             <div className="flex items-start gap-2">
-              <Info className="h-4 w-4 text-[#172b3a] mt-0.5" />
+              <Info className="h-4 w-4 text-[#5E1F38] mt-0.5" />
               <div className="flex-1 text-sm">
-                <p className="font-medium text-[#172b3a]">Validado em:</p>
+                <p className="font-medium text-[#5E1F38]">Validado em:</p>
                 <p className="text-muted-foreground">{doc.blockchain.timestamp}</p>
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <Info className="h-4 w-4 text-[#172b3a] mt-0.5" />
+              <Info className="h-4 w-4 text-[#5E1F38] mt-0.5" />
               <div className="flex-1 text-sm">
-                <p className="font-medium text-[#172b3a]">Validade:</p>
+                <p className="font-medium text-[#5E1F38]">Validade:</p>
                 <p className="text-muted-foreground">Permanente (imutável na blockchain)</p>
               </div>
             </div>

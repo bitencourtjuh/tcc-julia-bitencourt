@@ -15,7 +15,7 @@ export function BlockchainIllustration() {
               className="relative"
             >
               <div className="h-24 w-24 rounded-2xl bg-white shadow-xl flex items-center justify-center">
-                <FileCheck className="h-12 w-12 text-[#172b3a]" />
+                <FileCheck className="h-12 w-12 text-[#5E1F38]" />
               </div>
               <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-green-500 flex items-center justify-center">
                 <Shield className="h-4 w-4 text-white" />
@@ -33,7 +33,7 @@ export function BlockchainIllustration() {
               <motion.div
                 animate={{ x: [0, 10, 0] }}
                 transition={{ repeat: Infinity, duration: 2 }}
-                className="h-1 w-16 bg-gradient-to-r from-[#172b3a] to-[#66727d] rounded-full"
+                className="h-1 w-16 bg-gradient-to-r from-[#5E1F38] to-[#66727d] rounded-full"
               />
               <Link2 className="h-6 w-6 text-[#66727d]" />
             </motion.div>

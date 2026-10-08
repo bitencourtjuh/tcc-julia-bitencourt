@@ -8,16 +8,16 @@
   --card-foreground: #17202a;
   --popover: #fffdf8;
   --popover-foreground: #17202a;
-  --primary: #172b3a;
+  --primary: #5E1F38;
   --primary-foreground: #ffffff;
   --action: #b28a4a;
   --action-foreground: #ffffff;
   --secondary: #e8e3d8;
-  --secondary-foreground: #172b3a;
+  --secondary-foreground: #5E1F38;
   --muted: #ece9e2;
   --muted-foreground: #69717a;
   --accent: #e9e1d1;
-  --accent-foreground: #172b3a;
+  --accent-foreground: #5E1F38;
   --destructive: #a94442;
   --destructive-foreground: #ffffff;
   --border: #ddd8ce;
@@ -27,19 +27,19 @@
   --font-weight-medium: 600;
   --font-weight-normal: 400;
   --ring: #b28a4a;
-  --chart-1: #172b3a;
+  --chart-1: #5E1F38;
   --chart-2: #b28a4a;
   --chart-3: #66727d;
   --chart-4: #9c7a43;
-  --chart-5: #31495c;
+  --chart-5: #8B2E53;
   --radius: 0.9rem;
-  --sidebar: #172b3a;
+  --sidebar: #5E1F38;
   --sidebar-foreground: #fffdf8;
   --sidebar-primary: #b28a4a;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #243d50;
+  --sidebar-accent: #782848;
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #2e4658;
+  --sidebar-border: #862C50;
   --sidebar-ring: #b28a4a;
 }
 
@@ -65,6 +65,6 @@
 
 @layer components {
   .editorial-kicker { font-size: .72rem; text-transform: uppercase; letter-spacing: .2em; font-weight: 700; color: #9c7a43; }
-  .premium-card { box-shadow: 0 12px 40px rgba(23,43,58,.06); border-color: rgba(23,43,58,.10); }
+  .premium-card { box-shadow: 0 12px 40px rgba(94,31,56,.06); border-color: rgba(94,31,56,.10); }
   .gold-rule { height: 2px; width: 44px; background: #b28a4a; }
 }

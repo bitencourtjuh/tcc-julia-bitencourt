@@ -29,7 +29,7 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
             <DialogHeader>
               <DialogTitle className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-lg bg-[#e9e1d1] flex items-center justify-center">
-                  <FileText className="h-5 w-5 text-[#172b3a]" />
+                  <FileText className="h-5 w-5 text-[#5E1F38]" />
                 </div>
                 <div>
                   <div className="text-lg">{doc.nome}</div>
@@ -96,7 +96,7 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
                   <Separator />
                   <div>
                     <h4 className="font-semibold flex items-center gap-2 mb-3">
-                      <Blocks className="h-4 w-4 text-[#172b3a]" /> Registro na Blockchain
+                      <Blocks className="h-4 w-4 text-[#5E1F38]" /> Registro na Blockchain
                       <Badge className={`ml-auto ${STATUS_CONFIG[doc.status]?.color || ""}`}>
                         {doc.blockchain.status}
                       </Badge>
@@ -242,8 +242,8 @@ export function DocumentosPage() {
                       onClick={() => setStatusFilter(s)}
                       className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                         statusFilter === s
-                          ? "bg-[#172b3a] text-white border-[#172b3a]"
-                          : "bg-white text-muted-foreground border-gray-200 hover:border-[#172b3a] hover:text-[#172b3a]"
+                          ? "bg-[#5E1F38] text-white border-[#5E1F38]"
+                          : "bg-white text-muted-foreground border-gray-200 hover:border-[#5E1F38] hover:text-[#5E1F38]"
                       }`}
                     >
                       {s === "TODOS" ? "Todos" : STATUS_CONFIG[s]?.label} ({contadores[s]})
@@ -266,12 +266,12 @@ export function DocumentosPage() {
 
       {carregando ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-[#172b3a]" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#5E1F38]" />
         </div>
       ) : documentosFiltrados.length === 0 ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
           <div className="h-16 w-16 rounded-full bg-[#e9e1d1] flex items-center justify-center mx-auto mb-4">
-            <FileText className="h-8 w-8 text-[#172b3a]" />
+            <FileText className="h-8 w-8 text-[#5E1F38]" />
           </div>
           <p className="text-muted-foreground">Nenhum documento encontrado com os filtros aplicados.</p>
           <Button variant="ghost" className="mt-3" onClick={() => { setBusca(""); setStatusFilter("TODOS"); }}>
@@ -293,8 +293,8 @@ export function DocumentosPage() {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <div className="h-11 w-11 rounded-lg bg-[#e9e1d1] flex items-center justify-center flex-shrink-0 group-hover:bg-[#172b3a] transition-colors">
-                          <FileText className="h-5 w-5 text-[#172b3a] group-hover:text-white transition-colors" />
+                        <div className="h-11 w-11 rounded-lg bg-[#e9e1d1] flex items-center justify-center flex-shrink-0 group-hover:bg-[#5E1F38] transition-colors">
+                          <FileText className="h-5 w-5 text-[#5E1F38] group-hover:text-white transition-colors" />
                         </div>
                         <div className="min-w-0">
                           <CardTitle className="text-base truncate">{doc.nome}</CardTitle>

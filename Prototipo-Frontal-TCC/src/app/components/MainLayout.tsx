@@ -29,11 +29,11 @@ export function MainLayout() {
       <main className="flex-1 pb-12">
         <Outlet />
       </main>
-      <footer className="border-t border-white/10 bg-[#172b3a]">
+      <footer className="border-t border-white/10 bg-[#5E1F38]">
         <div className="container mx-auto px-6 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: Shield, bg: "bg-[#e9e1d1]", color: "text-[#172b3a]", title: "Segurança", desc: "Tecnologia blockchain para máxima segurança" },
+              { icon: Shield, bg: "bg-[#e9e1d1]", color: "text-[#5E1F38]", title: "Segurança", desc: "Tecnologia blockchain para máxima segurança" },
               { icon: FileText, bg: "bg-[#e5e7e8]", color: "text-[#66727d]", title: "Documentos Digitais", desc: "Gestão completa de documentos oficiais" },
               { icon: Lock, bg: "bg-[#eee5d4]", color: "text-[#b28a4a]", title: "Privacidade", desc: "Seus dados protegidos com criptografia" },
             ].map(({ icon: Icon, bg, color, title, desc }) => (

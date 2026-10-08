@@ -13,7 +13,7 @@ export function NotFoundPage() {
           <CardContent className="pt-12 pb-12 text-center">
             <div className="flex justify-center mb-6">
               <div className="h-32 w-32 rounded-full bg-gradient-to-br from-[#e9e1d1] to-[#e5e7e8] flex items-center justify-center">
-                <FileQuestion className="h-16 w-16 text-[#172b3a]" />
+                <FileQuestion className="h-16 w-16 text-[#5E1F38]" />
               </div>
             </div>
             
@@ -23,7 +23,7 @@ export function NotFoundPage() {
             </p>
             
             <Button 
-              className="bg-[#172b3a] hover:bg-[#243d50]"
+              className="bg-[#5E1F38] hover:bg-[#782848]"
               onClick={() => navigate("/")}
             >
               <Home className="mr-2 h-4 w-4" />

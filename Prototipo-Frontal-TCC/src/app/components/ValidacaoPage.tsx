@@ -290,7 +290,7 @@ export function ValidacaoPage() {
         <CardContent className="pt-6">
           <div className="flex items-start gap-4">
             <div className="h-12 w-12 rounded-full bg-white/80 flex items-center justify-center flex-shrink-0">
-              <AlertCircle className="h-6 w-6 text-[#172b3a]" />
+              <AlertCircle className="h-6 w-6 text-[#5E1F38]" />
             </div>
             <div>
               <h4 className="font-semibold mb-2">Como funciona a validação?</h4>
