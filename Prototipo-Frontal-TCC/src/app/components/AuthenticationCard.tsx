@@ -14,7 +14,7 @@ export function AuthenticationCard() {
     <Card className="shadow-lg border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ShieldCheck className="h-5 w-5 text-[#6366f1]" />
+          <ShieldCheck className="h-5 w-5 text-[#66727d]" />
           Verificação de Autenticidade
         </CardTitle>
       </CardHeader>
@@ -61,25 +61,25 @@ export function AuthenticationCard() {
         </div>
 
         {doc?.blockchain && (
-          <div className="p-4 bg-[#e0f2f1] rounded-lg space-y-2">
+          <div className="p-4 bg-[#e9e1d1] rounded-lg space-y-2">
             <div className="flex items-start gap-2">
-              <Info className="h-4 w-4 text-[#0d9488] mt-0.5" />
+              <Info className="h-4 w-4 text-[#172b3a] mt-0.5" />
               <div className="flex-1 text-sm">
-                <p className="font-medium text-[#0d9488]">Validado em:</p>
+                <p className="font-medium text-[#172b3a]">Validado em:</p>
                 <p className="text-muted-foreground">{doc.blockchain.timestamp}</p>
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <Info className="h-4 w-4 text-[#0d9488] mt-0.5" />
+              <Info className="h-4 w-4 text-[#172b3a] mt-0.5" />
               <div className="flex-1 text-sm">
-                <p className="font-medium text-[#0d9488]">Validade:</p>
+                <p className="font-medium text-[#172b3a]">Validade:</p>
                 <p className="text-muted-foreground">Permanente (imutável na blockchain)</p>
               </div>
             </div>
           </div>
         )}
 
-        <Button className="w-full bg-[#6366f1] hover:bg-[#4f46e5]" disabled={!doc}>
+        <Button className="w-full bg-[#66727d] hover:bg-[#4f46e5]" disabled={!doc}>
           {doc ? "Ver Certificado de Autenticidade" : "Nenhum documento selecionado"}
         </Button>
       </CardContent>

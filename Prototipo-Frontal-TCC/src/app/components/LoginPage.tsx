@@ -47,7 +47,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0d9488] via-[#0f766e] to-[#134e4a] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#172b3a] via-[#243d50] to-[#134e4a] flex items-center justify-center p-4">
       {/* Background decorativo */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(6)].map((_, i) => (
@@ -100,7 +100,7 @@ export function LoginPage() {
 
           <div className="pt-4 border-t border-white/20">
             <p className="text-white/50 text-xs">
-              © 2026 AplicaçãoDigital · TCC — Desenvolvimento de Sistemas
+              © 2026 Cartório Digital · TCC — Engenharia de Software
             </p>
           </div>
         </motion.div>
@@ -114,10 +114,10 @@ export function LoginPage() {
           <Card className="shadow-2xl border-white/10 bg-white/95 backdrop-blur">
             <CardHeader className="space-y-2">
               <div className="flex items-center gap-3 lg:hidden mb-2">
-                <div className="h-10 w-10 rounded-xl bg-[#0d9488] flex items-center justify-center">
+                <div className="h-10 w-10 rounded-xl bg-[#172b3a] flex items-center justify-center">
                   <FileText className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-lg font-semibold text-[#0d9488]">Cartório Digital</span>
+                <span className="text-lg font-semibold text-[#172b3a]">Cartório Digital</span>
               </div>
               <CardTitle className="text-2xl">Entrar no sistema</CardTitle>
               <CardDescription>
@@ -135,7 +135,7 @@ export function LoginPage() {
                       key={c.email}
                       type="button"
                       onClick={() => preencherDemo(c)}
-                      className="text-xs px-3 py-1.5 rounded-full border border-[#0d9488]/30 text-[#0d9488] hover:bg-[#e0f2f1] transition-colors"
+                      className="text-xs px-3 py-1.5 rounded-full border border-[#172b3a]/30 text-[#172b3a] hover:bg-[#e9e1d1] transition-colors"
                     >
                       {c.label}
                     </button>
@@ -194,7 +194,7 @@ export function LoginPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#0d9488] hover:bg-[#0f766e] h-11"
+                  className="w-full bg-[#172b3a] hover:bg-[#243d50] h-11"
                   disabled={carregando}
                 >
                   {carregando ? (

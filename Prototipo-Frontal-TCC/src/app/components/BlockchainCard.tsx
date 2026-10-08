@@ -49,7 +49,7 @@ export function BlockchainCard() {
     <Card className="shadow-lg border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Blocks className="h-5 w-5 text-[#0d9488]" />
+          <Blocks className="h-5 w-5 text-[#172b3a]" />
           Registro na Blockchain
         </CardTitle>
       </CardHeader>
@@ -63,7 +63,7 @@ export function BlockchainCard() {
               exit={{ opacity: 0 }}
               className="space-y-4 py-2"
             >
-              <p className="text-sm text-[#0d9488] flex items-center gap-2">
+              <p className="text-sm text-[#172b3a] flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Registrando na rede blockchain...
               </p>
@@ -150,8 +150,8 @@ export function BlockchainCard() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center py-8 text-center"
             >
-              <div className="h-14 w-14 rounded-full bg-[#e0f2f1] flex items-center justify-center mb-3">
-                <Blocks className="h-7 w-7 text-[#0d9488]" />
+              <div className="h-14 w-14 rounded-full bg-[#e9e1d1] flex items-center justify-center mb-3">
+                <Blocks className="h-7 w-7 text-[#172b3a]" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Nenhum registro na blockchain ainda.<br />Envie um documento para registrar.
@@ -174,7 +174,7 @@ export function BlockchainCard() {
               disabled={buscando}
             />
             <Button
-              className="bg-[#0d9488] hover:bg-[#0f766e]"
+              className="bg-[#172b3a] hover:bg-[#243d50]"
               onClick={handleBuscar}
               disabled={buscando || !hashInput.trim()}
             >

@@ -152,10 +152,10 @@ export function ValidacaoPage() {
         </p>
       </div>
 
-      <Card className="mb-6 shadow-lg border-[#6366f1]/20">
+      <Card className="mb-6 shadow-lg border-[#66727d]/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5 text-[#6366f1]" />
+            <Upload className="h-5 w-5 text-[#66727d]" />
             Enviar Documento para Validação
           </CardTitle>
           <CardDescription>
@@ -185,7 +185,7 @@ export function ValidacaoPage() {
               </Button>
               {selectedFile && (
                 <Button
-                  className="w-full bg-[#6366f1] hover:bg-[#4f46e5]"
+                  className="w-full bg-[#66727d] hover:bg-[#4f46e5]"
                   onClick={handleFileUpload}
                   disabled={isUploading}
                 >
@@ -216,7 +216,7 @@ export function ValidacaoPage() {
                   disabled={isSearching}
                 />
                 <Button
-                  className="bg-[#6366f1] hover:bg-[#4f46e5]"
+                  className="bg-[#66727d] hover:bg-[#4f46e5]"
                   onClick={handleHashSearch}
                   disabled={isSearching}
                 >
@@ -257,8 +257,8 @@ export function ValidacaoPage() {
                     {index > 0 && <Separator className="my-4" />}
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-start gap-3 flex-1">
-                        <div className="h-10 w-10 rounded-lg bg-[#6366f1]/10 flex items-center justify-center flex-shrink-0">
-                          <ShieldCheck className="h-5 w-5 text-[#6366f1]" />
+                        <div className="h-10 w-10 rounded-lg bg-[#66727d]/10 flex items-center justify-center flex-shrink-0">
+                          <ShieldCheck className="h-5 w-5 text-[#66727d]" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium truncate">{val.documento}</h4>
@@ -286,11 +286,11 @@ export function ValidacaoPage() {
         </CardContent>
       </Card>
 
-      <Card className="mt-6 bg-gradient-to-br from-[#e0f2f1] to-[#e0e7ff] border-none shadow-lg">
+      <Card className="mt-6 bg-gradient-to-br from-[#e9e1d1] to-[#e5e7e8] border-none shadow-lg">
         <CardContent className="pt-6">
           <div className="flex items-start gap-4">
             <div className="h-12 w-12 rounded-full bg-white/80 flex items-center justify-center flex-shrink-0">
-              <AlertCircle className="h-6 w-6 text-[#0d9488]" />
+              <AlertCircle className="h-6 w-6 text-[#172b3a]" />
             </div>
             <div>
               <h4 className="font-semibold mb-2">Como funciona a validação?</h4>

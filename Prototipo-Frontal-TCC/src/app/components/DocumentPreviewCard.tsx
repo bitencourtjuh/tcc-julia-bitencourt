@@ -28,7 +28,7 @@ export function DocumentPreviewCard() {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-[#0d9488]" />
+            <FileText className="h-5 w-5 text-[#172b3a]" />
             Preview do Documento
           </div>
           {doc && (
@@ -48,12 +48,12 @@ export function DocumentPreviewCard() {
               exit={{ opacity: 0 }}
               className="space-y-4"
             >
-              {/* (Melhorar isso depois no frontend) Simulação visual do documento */}
+              {/* Simulação visual do documento */}
               <div className="relative aspect-[3/4] bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-dashed border-gray-300 overflow-hidden">
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
                   <div className="w-full h-full bg-white shadow-lg rounded-lg p-5 space-y-3">
                     <div className="flex items-center gap-3 pb-3 border-b">
-                      <div className="h-10 w-10 bg-[#0d9488] rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="h-10 w-10 bg-[#172b3a] rounded-lg flex items-center justify-center flex-shrink-0">
                         <FileText className="h-5 w-5 text-white" />
                       </div>
                       <div className="min-w-0">
@@ -136,8 +136,8 @@ export function DocumentPreviewCard() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center py-16 text-center"
             >
-              <div className="h-16 w-16 rounded-full bg-[#e0f2f1] flex items-center justify-center mb-4">
-                <FileText className="h-8 w-8 text-[#0d9488]" />
+              <div className="h-16 w-16 rounded-full bg-[#e9e1d1] flex items-center justify-center mb-4">
+                <FileText className="h-8 w-8 text-[#172b3a]" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Nenhum documento selecionado.<br />Envie um arquivo para ver o preview.

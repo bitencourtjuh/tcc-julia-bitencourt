@@ -86,7 +86,7 @@ export function DocumentUploadCard() {
     <Card className="shadow-lg border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Upload className="h-5 w-5 text-[#0d9488]" />
+          <Upload className="h-5 w-5 text-[#172b3a]" />
           Upload de Documento
         </CardTitle>
         <CardDescription>
@@ -110,9 +110,9 @@ export function DocumentUploadCard() {
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="flex items-center gap-2 p-3 bg-[#e0f2f1] rounded-lg border border-[#0d9488]/20"
+              className="flex items-center gap-2 p-3 bg-[#e9e1d1] rounded-lg border border-[#172b3a]/20"
             >
-              <FileText className="h-4 w-4 text-[#0d9488] flex-shrink-0" />
+              <FileText className="h-4 w-4 text-[#172b3a] flex-shrink-0" />
               <span className="text-sm flex-1 truncate">{arquivo.name}</span>
               <span className="text-xs text-muted-foreground flex-shrink-0">
                 {(arquivo.size / 1024).toFixed(0)} KB
@@ -152,7 +152,7 @@ export function DocumentUploadCard() {
                   return (
                     <div key={s} className="flex-1 flex flex-col items-center gap-1">
                       <div className={`h-2 w-full rounded-full transition-colors duration-500 ${
-                        done ? "bg-[#0d9488]" : active ? "bg-[#0d9488]/50 animate-pulse" : "bg-gray-200"
+                        done ? "bg-[#172b3a]" : active ? "bg-[#172b3a]/50 animate-pulse" : "bg-gray-200"
                       }`} />
                       <span className="text-[10px] text-muted-foreground capitalize">{s === "ia" ? "IA" : s === "blockchain" ? "Blockchain" : "Upload"}</span>
                     </div>
@@ -174,7 +174,7 @@ export function DocumentUploadCard() {
             {arquivo ? "Trocar Arquivo" : "Selecionar Arquivo"}
           </Button>
           <Button
-            className="flex-1 bg-[#f59e0b] hover:bg-[#d97706] text-white"
+            className="flex-1 bg-[#b28a4a] hover:bg-[#9c7a43] text-white"
             onClick={handleUpload}
             disabled={!arquivo || isProcessing}
           >

@@ -29,13 +29,13 @@ export function MainLayout() {
       <main className="flex-1 pb-12">
         <Outlet />
       </main>
-      <footer className="border-t bg-card">
+      <footer className="border-t border-white/10 bg-[#172b3a]">
         <div className="container mx-auto px-6 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: Shield, bg: "bg-[#e0f2f1]", color: "text-[#0d9488]", title: "Segurança", desc: "Tecnologia blockchain para máxima segurança" },
-              { icon: FileText, bg: "bg-[#e0e7ff]", color: "text-[#6366f1]", title: "Documentos Digitais", desc: "Gestão completa de documentos oficiais" },
-              { icon: Lock, bg: "bg-[#fef3c7]", color: "text-[#f59e0b]", title: "Privacidade", desc: "Seus dados protegidos com criptografia" },
+              { icon: Shield, bg: "bg-[#e9e1d1]", color: "text-[#172b3a]", title: "Segurança", desc: "Tecnologia blockchain para máxima segurança" },
+              { icon: FileText, bg: "bg-[#e5e7e8]", color: "text-[#66727d]", title: "Documentos Digitais", desc: "Gestão completa de documentos oficiais" },
+              { icon: Lock, bg: "bg-[#eee5d4]", color: "text-[#b28a4a]", title: "Privacidade", desc: "Seus dados protegidos com criptografia" },
             ].map(({ icon: Icon, bg, color, title, desc }) => (
               <div key={title} className="flex items-start gap-3">
                 <div className={`h-10 w-10 rounded-lg ${bg} flex items-center justify-center`}>
@@ -43,14 +43,14 @@ export function MainLayout() {
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">{title}</h4>
-                  <p className="text-sm text-muted-foreground">{desc}</p>
+                  <p className="text-sm text-white/60">{desc}</p>
                 </div>
               </div>
             ))}
           </div>
           <div className="mt-8 pt-8 border-t text-center">
-            <p className="text-sm text-muted-foreground">
-             © 2026 AplicaçãoDigital · TCC — Desenvolvimento de Sistemas · Todos os direitos reservados.
+            <p className="text-sm text-white/60">
+              © 2026 Cartório Digital — TCC Engenharia de Software · Todos os direitos reservados.
             </p>
           </div>
         </div>

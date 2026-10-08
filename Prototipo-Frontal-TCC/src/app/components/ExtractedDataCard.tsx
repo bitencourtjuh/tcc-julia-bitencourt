@@ -32,11 +32,11 @@ export function ExtractedDataCard() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-[#6366f1]" />
+            <Brain className="h-5 w-5 text-[#66727d]" />
             Dados Extraídos pela IA
           </CardTitle>
           {hasData && dados && (
-            <Badge className="bg-[#e0e7ff] text-[#6366f1] border-none text-xs">
+            <Badge className="bg-[#e5e7e8] text-[#66727d] border-none text-xs">
               {dados.confianca}% confiança
             </Badge>
           )}
@@ -52,7 +52,7 @@ export function ExtractedDataCard() {
               exit={{ opacity: 0 }}
               className="space-y-4"
             >
-              <p className="text-sm text-[#6366f1] flex items-center gap-2">
+              <p className="text-sm text-[#66727d] flex items-center gap-2">
                 <Brain className="h-4 w-4 animate-pulse" />
                 IA analisando documento...
               </p>
@@ -75,7 +75,7 @@ export function ExtractedDataCard() {
               {campos.map(({ icon: Icon, label, value }, i) => (
                 <div key={label}>
                   <div className="flex items-start gap-3">
-                    <Icon className="h-4 w-4 text-[#6366f1] mt-1 flex-shrink-0" />
+                    <Icon className="h-4 w-4 text-[#66727d] mt-1 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-muted-foreground">{label}</p>
                       <p className="font-medium text-sm truncate">{value}</p>
@@ -93,8 +93,8 @@ export function ExtractedDataCard() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center py-10 text-center"
             >
-              <div className="h-14 w-14 rounded-full bg-[#e0e7ff] flex items-center justify-center mb-3">
-                <Brain className="h-7 w-7 text-[#6366f1]" />
+              <div className="h-14 w-14 rounded-full bg-[#e5e7e8] flex items-center justify-center mb-3">
+                <Brain className="h-7 w-7 text-[#66727d]" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Envie um documento para que a IA<br />extraia os dados automaticamente.
