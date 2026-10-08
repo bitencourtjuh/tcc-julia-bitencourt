@@ -203,15 +203,44 @@ public class InvoiceExtractor {
 
         Elements rows = itemsTable.select("tr");
 
-        Element itemRow = rows.get(1);
+        for (int i = 1; i < rows.size(); i++) {
 
-        Elements cells = itemRow.select("td");
+            Elements cells = rows.get(i).select("td");
 
-        InvoiceItem item = new InvoiceItem();
+            if (!isItemRow(cells)) {
+                continue;
+            }
 
-        item.setDescription(cells.get(0).text().trim());
-        item.setQuantity(Integer.parseInt(cells.get(1).text().trim()));
-        item.setAmount(parseMoney(cells.get(3).text().trim()));
-        invoice.getItems().add(item);
+            InvoiceItem item = new InvoiceItem();
+
+            item.setDescription(cells.get(0).text().trim());
+
+            item.setQuantity(Integer.parseInt(cells.get(1).text().trim()));
+
+            item.setAmount(parseMoney(cells.get(3).text().trim()));
+
+            invoice.getItems().add(item);
+        }
+    }
+
+    private boolean isItemRow(Elements cells) {
+
+        if (cells.size() < 4) {
+            return false;
+        }
+
+        String description = cells.get(0).text().trim();
+        String quantity = cells.get(1).text().trim();
+
+        if (description.isEmpty()) {
+            return false;
+        }
+
+        try {
+            Integer.parseInt(quantity);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
