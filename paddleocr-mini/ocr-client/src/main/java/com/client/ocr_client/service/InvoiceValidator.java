@@ -88,7 +88,7 @@ public class InvoiceValidator {
         }
 
         BigDecimal expectedTotal = invoice.getSubtotal().add(invoice.getTaxAmount());
-        BigDecimal difference = expectedTotal.subtract(invoice.getTotal().abs());
+        BigDecimal difference = expectedTotal.subtract(invoice.getTotal()).abs();
         BigDecimal tolerance = new BigDecimal("0.01");
 
         if (difference.compareTo(tolerance) > 0) {
