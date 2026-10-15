@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.client.ocr_client.dto.Invoice;
 import com.client.ocr_client.dto.OCRResponse;
 import com.client.ocr_client.dto.ValidationResult;
+import com.client.ocr_client.exception.InvoiceValidationException;
 
 @Service
 public class OcrService {
@@ -33,6 +34,10 @@ public class OcrService {
         System.out.println("Validating invoice...");
 
         ValidationResult validation = invoiceValidator.validate(invoice);
+
+        if (!validation.isValid()) {
+            throw new InvoiceValidationException(validation.getErrors());
+        }
 
         return invoice;
     }
