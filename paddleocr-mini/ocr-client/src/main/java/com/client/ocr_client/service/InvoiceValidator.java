@@ -72,7 +72,7 @@ public class InvoiceValidator {
             if (item.getAmount() == null
                     || item.getAmount().compareTo(BigDecimal.ZERO) < 0) {
 
-                result.getErrors().add("An invoice item has an invalid amount");
+                result.getErrors().add("An invoice item has an invalid amount.");
             }
         }
     }
