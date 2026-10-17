@@ -130,13 +130,16 @@ class InvoiceExtractorTest {
         assertEquals(new BigDecimal("1243.00"), invoice.getSubtotal());
         assertEquals(new BigDecimal("5.2"), invoice.getTaxRate());
         assertEquals(new BigDecimal("64.64"), invoice.getTaxAmount());
+        assertEquals(new BigDecimal("1307.64"), invoice.getBalanceDue());
         assertEquals(new BigDecimal("1307.64"), invoice.getTotal());
         assertEquals(1, invoice.getItems().size());
 
         InvoiceItem item = invoice.getItems().get(0);
 
-        assertEquals("Auxílio de Manutenção e Serviços de reparo",
-                item.getDescription());
+        assertEquals(
+                "Auxílio de Manutenção e Serviços de reparo",
+                item.getDescription()
+        );
         assertEquals(1, item.getQuantity());
         assertEquals(new BigDecimal("1243.00"), item.getAmount());
 
@@ -324,7 +327,7 @@ class InvoiceExtractorTest {
                 invoice.getOrderNumber()
         );
 
-        // Dates
+        // Date
         assertEquals(
                 LocalDate.of(2026, 8, 19),
                 invoice.getDate()
@@ -335,7 +338,7 @@ class InvoiceExtractorTest {
                 invoice.getDueDate()
         );
 
-        // Financial information
+        // Financial
         assertEquals(
                 new BigDecimal("1243.00"),
                 invoice.getSubtotal()
@@ -353,10 +356,14 @@ class InvoiceExtractorTest {
 
         assertEquals(
                 new BigDecimal("1307.64"),
+                invoice.getBalanceDue()
+        );
+
+        assertEquals(
+                new BigDecimal("1307.64"),
                 invoice.getTotal()
         );
 
-        // Items
         assertNotNull(invoice.getItems());
         assertEquals(1, invoice.getItems().size());
 

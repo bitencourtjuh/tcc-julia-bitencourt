@@ -23,15 +23,9 @@ public class OcrService {
 
     public Invoice processDocument(MultipartFile file) throws Exception {
 
-        System.out.println("Sending file to OCR service: " + file.getOriginalFilename());
         OCRResponse ocrResponse = ocrClient.sendToOcr(file);
-        System.out.println("Received OCR response: " + ocrResponse);
 
         Invoice invoice = invoiceExtractor.extract(ocrResponse);
-
-        System.out.println("Extracted invoice: " + invoice);
-
-        System.out.println("Validating invoice...");
 
         ValidationResult validation = invoiceValidator.validate(invoice);
 
