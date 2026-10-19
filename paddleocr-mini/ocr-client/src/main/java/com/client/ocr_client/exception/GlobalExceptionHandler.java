@@ -1,17 +1,15 @@
 package com.client.ocr_client.exception;
 
-import org.springframework.http.HttpStatusCode;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.client.ocr_client.dto.ValidationErrorResponse;
 
-@RestController
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(InvoiceValidationException.class)
     public ResponseEntity<ValidationErrorResponse> handleInvoiceValidation(
             InvoiceValidationException exception
     ) {
@@ -19,7 +17,7 @@ public class GlobalExceptionHandler {
                 exception.getMessage(),
                 exception.getErrors());
 
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
+        return ResponseEntity.unprocessableContent().body(response);
     }
 
 }

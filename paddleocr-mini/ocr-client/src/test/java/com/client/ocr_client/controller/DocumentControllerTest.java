@@ -1,6 +1,10 @@
 package com.client.ocr_client.controller;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -11,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.client.ocr_client.dto.Invoice;
+import com.client.ocr_client.exception.InvoiceValidationException;
 import com.client.ocr_client.service.OcrService;
 
 @WebMvcTest(DocumentController.class)
@@ -26,9 +30,6 @@ class DocumentControllerTest {
     @Test
     void uploadDocument() throws Exception {
 
-        Invoice invoice = new Invoice();
-        invoice.setInvoiceNumber("AS23-231");
-
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "Invoice_test.pdf",
@@ -36,13 +37,20 @@ class DocumentControllerTest {
                 "fake pdf content".getBytes()
         );
 
-        when(ocrService.processDocument(
-                org.mockito.ArgumentMatchers.any()
-        )).thenReturn(invoice);
+        List<String> errors = List.of(
+                "Invoice number is missing.",
+                "Invoice date is missing."
+        );
+
+        when(ocrService.processDocument(any()))
+                .thenThrow(new InvoiceValidationException(errors));
 
         mockMvc.perform(multipart("/documents/ocr").file(file))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.invoiceNumber").value("AS23-231"));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errors[0]").value("Invoice number is missing."))
+                .andExpect(jsonPath("$.errors[1]").value("Invoice date is missing."));
+
+        verify(ocrService).processDocument(any());
     }
 
 }
