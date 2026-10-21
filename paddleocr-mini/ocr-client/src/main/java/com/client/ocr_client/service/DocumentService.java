@@ -73,7 +73,7 @@ public class DocumentService {
 
         return new DocumentProcessResponse(
                 file.getOriginalFilename(),
-                null,
+                dados.tipoDocumento(),
                 "AGUARDANDO",
                 textoExtraido,
                 dados
