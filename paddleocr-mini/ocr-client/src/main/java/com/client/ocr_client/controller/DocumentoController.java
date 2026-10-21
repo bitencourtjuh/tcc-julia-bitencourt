@@ -18,7 +18,7 @@ import com.client.ocr_client.entity.Document;
 import com.client.ocr_client.service.DocumentService;
 
 import java.util.List;
-import com.client.ocr_client.entity.Document;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
@@ -89,6 +89,11 @@ public class DocumentoController {
     @GetMapping
     public List<Document> findAll(){
         return documentoService.findAll();
+    }
+
+    @GetMapping ("/{id}")
+    public Document findById(@PathVariable long id){
+        return documentoService.findById(id);
     }
 
 }
