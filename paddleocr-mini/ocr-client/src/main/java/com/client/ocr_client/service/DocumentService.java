@@ -13,10 +13,12 @@ import com.client.ocr_client.dto.OCRResponse;
 @Service
 public class DocumentService {
 
+    private final DocumentExtractor documentExtractor;
     private final OcrClient ocrClient;
 
-    public DocumentService(OcrClient ocrClient) {
+    public DocumentService(OcrClient ocrClient, DocumentExtractor documentExtractor) {
         this.ocrClient = ocrClient;
+        this.documentExtractor = documentExtractor;
     }
 
     public DocumentProcessResponse processar(
@@ -52,12 +54,7 @@ public class DocumentService {
             );
         }
 
-        DadosExtraidos dados = new DadosExtraidos(
-                null,
-                null,
-                null,
-                null
-        );
+        DadosExtraidos dados = documentExtractor.extrair(textoExtraido);
 
         return new DocumentProcessResponse(
                 file.getOriginalFilename(),
