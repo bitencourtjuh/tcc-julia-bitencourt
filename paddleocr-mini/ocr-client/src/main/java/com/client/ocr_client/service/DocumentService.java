@@ -129,4 +129,15 @@ public class DocumentService {
         return documentoRepository.save(document);
 
     }
+
+    public List<Document> findAll(){
+        return documentoRepository.findAll();
+    }
+
+    public Document findById(long id){
+        return documentoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "Documento não encontrado."
+        ));
+    }
 }

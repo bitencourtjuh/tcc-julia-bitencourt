@@ -17,6 +17,10 @@ import com.client.ocr_client.dto.DocumentProcessResponse;
 import com.client.ocr_client.entity.Document;
 import com.client.ocr_client.service.DocumentService;
 
+import java.util.List;
+import com.client.ocr_client.entity.Document;
+import org.springframework.web.bind.annotation.GetMapping;
+
 @RestController
 @RequestMapping("/api/documentos")
 public class DocumentoController {
@@ -80,6 +84,11 @@ public class DocumentoController {
             @RequestBody ConfirmDocumentRequest request) {
 
         return documentoService.confirm(request);
+    }
+
+    @GetMapping
+    public List<Document> findAll(){
+        return documentoService.findAll();
     }
 
 }
