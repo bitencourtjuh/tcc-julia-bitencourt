@@ -54,6 +54,25 @@ export interface Documento {
   blockchain?: RegistroBlockchain;
 }
 
+export interface DocumentoProcessado {
+  nomeArquivo: string;
+  tipoDocumento: string | null;
+  status: string;
+  textoExtraido: string;
+  dadosExtraidos: {
+    nome: string | null;
+    cpf: string | null;
+    dataNascimento: string | null;
+    tipoDocumento: string | null;
+  };
+}
+
+export interface ConfirmarDocumento {
+  nome: string;
+  cpf: string | null;
+  tipoDocumento: string;
+}
+
 export interface DashboardStats {
   totalValidados: number;
   verificacoesHoje: number;
@@ -201,6 +220,29 @@ export async function getDashboardStats(): Promise<ApiResponse<DashboardStats>> 
       crescimentoVerificacoes: 8,
     },
   };
+}
+
+export async function processarDocumento(
+  arquivo: File
+): Promise<DocumentoProcessado> {
+  const formData = new FormData();
+  formData.append("file", arquivo);
+
+  const response = await fetch(
+    `${BASE_URL}/documentos/processar`,
+    {
+      method: "POST",
+      body: formData
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao processar documento: HTTP ${response.status}`
+    );
+  }
+
+  return response.json();
 }
 
 export async function getDocumentos(): Promise<ApiResponse<Documento[]>> {
