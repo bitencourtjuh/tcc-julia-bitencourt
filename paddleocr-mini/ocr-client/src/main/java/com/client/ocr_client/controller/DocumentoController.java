@@ -1,0 +1,74 @@
+package com.client.ocr_client.controller;
+
+import java.util.Locale;
+import java.util.Set;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.client.ocr_client.dto.DocumentProcessResponse;
+import com.client.ocr_client.service.DocumentService;
+
+@RestController
+@RequestMapping("/api/documentos")
+public class DocumentoController {
+
+    private static final long MAX_FILE_SIZE
+            = 10L * 1024 * 1024;
+
+    private static final Set<String> EXTENSOES_PERMITIDAS
+            = Set.of(".pdf", ".png", ".jpg", ".jpeg");
+
+    private final DocumentService documentoService;
+
+    public DocumentoController(DocumentService documentoService) {
+        this.documentoService = documentoService;
+    }
+
+    @PostMapping("/processar")
+    public DocumentProcessResponse processar(
+            @RequestParam("file") MultipartFile file) throws Exception {
+
+        if (file.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "O arquivo está vazio."
+            );
+        }
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new ResponseStatusException(
+                    HttpStatus.PAYLOAD_TOO_LARGE,
+                    "O arquivo excede o limite de 10 MB."
+            );
+        }
+
+        String nomeArquivo = file.getOriginalFilename();
+
+        if (nomeArquivo == null || nomeArquivo.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "O nome do arquivo é obrigatório."
+            );
+        }
+
+        String nome = nomeArquivo.toLowerCase(Locale.ROOT);
+
+        boolean permitido = EXTENSOES_PERMITIDAS.stream()
+                .anyMatch(nome::endsWith);
+
+        if (!permitido) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Formato de arquivo não suportado."
+            );
+        }
+
+        return documentoService.processar(file);
+    }
+}
