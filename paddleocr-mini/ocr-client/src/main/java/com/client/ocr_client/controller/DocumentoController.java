@@ -5,13 +5,16 @@ import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.client.ocr_client.dto.ConfirmDocumentRequest;
 import com.client.ocr_client.dto.DocumentProcessResponse;
+import com.client.ocr_client.entity.Document;
 import com.client.ocr_client.service.DocumentService;
 
 @RestController
@@ -71,4 +74,12 @@ public class DocumentoController {
 
         return documentoService.processar(file);
     }
+
+    @PostMapping("/confirmar")
+    public Document confirmar(
+            @RequestBody ConfirmDocumentRequest request) {
+
+        return documentoService.confirm(request);
+    }
+
 }
