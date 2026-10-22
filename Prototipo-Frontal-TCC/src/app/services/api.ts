@@ -31,6 +31,34 @@ export interface DadosExtraidos {
   confianca: number;
 }
 
+interface DocumentoBackend {
+  id: number;
+  nome: string;
+  cpf: string | null;
+  tipoDocumento: string | null;
+  dataCadastro: string | null;
+  status: DocumentStatus;
+  hashSha256: string | null;
+}
+
+function mapDocumento(doc: DocumentoBackend): Documento {
+  const data = doc.dataCadastro
+    ? new Date(doc.dataCadastro).toLocaleString("pt-BR")
+    : "Não informada";
+
+  return {
+    id: doc.id,
+    nome: doc.nome,
+    tipo: doc.tipoDocumento ?? "Não identificado",
+    status: doc.status,
+    dataCriacao: data,
+    dataAtualizacao: data,
+    usuario: "Não informado",
+    usuarioId: 0,
+    tamanho: "Não informado"
+  };
+}
+
 export interface RegistroBlockchain {
   hash: string;
   transacaoId: string;
@@ -243,6 +271,33 @@ export async function processarDocumento(
   }
 
   return response.json();
+}
+
+
+export async function confirmarDocumento(
+  dados: ConfirmarDocumento
+): Promise<Documento> {
+  const response = await fetch(
+    `${BASE_URL}/documentos/confirmar`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dados)
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao confirmar documento: HTTP ${response.status}`
+    );
+  }
+
+  const documentoBackend: DocumentoBackend =
+    await response.json();
+
+  return mapDocumento(documentoBackend);
 }
 
 export async function getDocumentos(): Promise<ApiResponse<Documento[]>> {
