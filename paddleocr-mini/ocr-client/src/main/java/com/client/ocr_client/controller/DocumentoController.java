@@ -30,10 +30,10 @@ public class DocumentoController {
     private static final Set<String> EXTENSOES_PERMITIDAS
             = Set.of(".pdf", ".png", ".jpg", ".jpeg");
 
-    private final DocumentService documentoService;
+    private final DocumentService documentService;
 
-    public DocumentoController(DocumentService documentoService) {
-        this.documentoService = documentoService;
+    public DocumentoController(DocumentService documentService) {
+        this.documentService = documentService;
     }
 
     @PostMapping("/processar")
@@ -75,24 +75,24 @@ public class DocumentoController {
             );
         }
 
-        return documentoService.processar(file);
+        return documentService.processar(file);
     }
 
     @PostMapping("/confirmar")
-    public Document confirmar(
-            @RequestBody ConfirmDocumentRequest request) {
-
-        return documentoService.confirm(request);
+    public Document confirm(
+            @RequestBody ConfirmDocumentRequest request
+    ) {
+        return documentService.confirm(request);
     }
 
     @GetMapping
     public List<Document> findAll() {
-        return documentoService.findAll();
+        return documentService.findAll();
     }
 
     @GetMapping("/{id}")
     public Document findById(@PathVariable long id) {
-        return documentoService.findById(id);
+        return documentService.findById(id);
     }
 
 }

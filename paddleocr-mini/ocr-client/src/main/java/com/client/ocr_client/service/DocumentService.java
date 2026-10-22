@@ -141,10 +141,10 @@ public class DocumentService {
             );
         }
 
-        if (draft == null) {
+        if (request.processamentoId() == null) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Processamento OCR não encontrado."
+                    HttpStatus.BAD_REQUEST,
+                    "ID de processamento é obrigatório."
             );
         }
 
@@ -161,7 +161,7 @@ public class DocumentService {
         document.setStatus("VALIDADO");
 
         String conteudoCanonico
-                = "nome" + nome.length() + ":" + nome
+                = "nome=" + nome.length() + ":" + nome
                 + "|cpf=" + (cpf == null ? "-" : cpf)
                 + "|tipo=" + tipo.length() + ":" + tipo;
 
