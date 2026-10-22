@@ -97,6 +97,15 @@ export interface DocumentHistory {
   auditorias: AuditEntry[];
 }
 
+interface DocumentoBackend {
+  id: number;
+  nome: string;
+  cpf: string | null;
+  tipoDocumento: string | null;
+  dataCadastro: string | null;
+  status: DocumentStatus;
+  hashSha256: string | null;
+}
 // ─── Mock DB ──────────────────────────────────────────────────────────────────
 
 const USUARIOS_MOCK: Record<string, Usuario> = {
@@ -195,6 +204,24 @@ function formatDate(): string {
   return new Date().toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
+function mapDocumento(doc: DocumentoBackend): Documento {
+  const data = doc.dataCadastro
+    ? new Date(doc.dataCadastro).toLocaleString("pt-BR")
+    : "Não informada";
+
+  return {
+    id: doc.id,
+    nome: doc.nome,
+    tipo: doc.tipoDocumento ?? "Não identificado",
+    status: doc.status,
+    dataCriacao: data,
+    dataAtualizacao: data,
+    usuario: "Não informado",
+    usuarioId: 0,
+    tamanho: "Não informado"
+  };
+}
+
 // ─── API Functions ─────────────────────────────────────────────────────────────
 // Cada função simula uma chamada HTTP ao backend Java/Spring Boot
 
@@ -226,8 +253,19 @@ export async function getDashboardStats(): Promise<ApiResponse<DashboardStats>> 
 }
 
 export async function getDocumentos(): Promise<ApiResponse<Documento[]>> {
-  await delay(DELAY_MS);
-  return { data: [...documentosMock], status: 200, mensagem: "OK" };
+  const response = await fetch(`${BASE_URL}/documentos`);
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  const dados: DocumentoBackend[] = await response.json();
+
+  return {
+    data: dados.map(mapDocumento),
+    status: response.status,
+    mensagem: "Documentos carregados com sucesso."
+  };
 }
 
 export async function uploadDocumento(

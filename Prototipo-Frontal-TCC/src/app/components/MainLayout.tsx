@@ -15,7 +15,7 @@ export function MainLayout() {
     const path = location.pathname;
     if (path === "/") return "dashboard";
     if (path.includes("documentos")) return "documentos";
-    if (path.includes("validacao")) return "validação";
+    if (path.includes("validacao")) return "validacao";
     return "dashboard";
   };
 

@@ -16,7 +16,7 @@ const TIPO_CORES: Record<string,string> = { SUCESSO:"bg-emerald-50 text-emerald-
 export function Header({ currentPage, onNavigate }: HeaderProps) {
   const { dispatch } = useApp(); const usuario = useUsuario(); const notificacoes = useNotificacoes(); const navigate = useNavigate();
   const [mobileMenuOpen,setMobileMenuOpen]=useState(false); const [notifOpen,setNotifOpen]=useState(false); const [userMenuOpen,setUserMenuOpen]=useState(false);
-  const menuItems=[{label:"Visão geral",key:"dashboard"},{label:"Documentos",key:"documentos"},{label:"Validação",key:"validação"}];
+  const menuItems=[{label:"Visão geral",key:"dashboard"},{label:"Documentos",key:"documentos"},{ label: "Validação", key: "validacao" }];
   const naoLidas=notificacoes.filter(n=>!n.lida).length;
   function handleLogout(){dispatch({type:"LOGOUT"});navigate("/login");toast.success("Sessão encerrada com segurança.");}
   return <header className="sticky top-0 z-50 border-b border-[#d9d4ca] bg-[#fffdf8]/95 backdrop-blur-xl">
