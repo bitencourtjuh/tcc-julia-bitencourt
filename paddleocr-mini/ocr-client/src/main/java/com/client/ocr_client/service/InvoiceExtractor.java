@@ -29,10 +29,11 @@ public class InvoiceExtractor {
         Invoice invoice = new Invoice();
 
         extractBasicInformation(text, document, invoice);
-        extractFinancialInformation(document, invoice);
+        extractFinancialInformation(text, document, invoice);
         extractAdditionalInformation(text, invoice);
         extractItems(document, invoice);
         extractDescriptionAndRecipient(document, invoice);
+        extractFinancialInformation(text, document, invoice);
 
         return invoice;
     }
@@ -151,34 +152,29 @@ public class InvoiceExtractor {
         return null;
     }
 
-    private void extractFinancialInformation(Document document, Invoice invoice) {
+    private void extractFinancialInformation(String text, Document document, Invoice invoice) {
 
-        String balanceDueValue = extractTableValue(document, "Saldo devedor:");
+        String subTotalValue = extractTableValue(document, "Subtotal:");
 
-        invoice.setBalanceDue(parseMoney(balanceDueValue));
+        invoice.setSubtotal(parseMoney(subTotalValue));
 
-        String subtotalValue = extractTableValue(document, "Subtotal:");
+        String totalValue
+                = extractTableValue(document, "Saldo devedor:");
 
-        invoice.setSubtotal(parseMoney(subtotalValue));
+        invoice.setTotal(parseMoney(totalValue));
 
         String taxLabel
                 = findCellContaining(document, "Imposto");
 
         if (taxLabel != null) {
-            invoice.setTaxRate(extractTaxRate(taxLabel));
+            invoice.setTaxRate(
+                    extractTaxRate(taxLabel)
+            );
 
             String taxAmount
                     = extractTableValue(document, taxLabel);
 
             invoice.setTaxAmount(parseMoney(taxAmount));
-        }
-
-        if (invoice.getSubtotal() != null
-                && invoice.getTaxAmount() != null) {
-            invoice.setTotal(
-                    invoice.getSubtotal()
-                            .add(invoice.getTaxAmount())
-            );
         }
     }
 
