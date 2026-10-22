@@ -97,6 +97,81 @@ export interface DocumentHistory {
   auditorias: AuditEntry[];
 }
 
+
+export interface DadosExtraidosOCR {
+  nome: string | null;
+  cpf: string | null;
+  dataNascimento: string | null;
+  tipoDocumento: string | null;
+}
+
+export interface DocumentoProcessado {
+  processamentoId: string;
+  nomeArquivo: string;
+  tipoDocumento: string | null;
+  status: string;
+  textoExtraido: string;
+  dadosExtraidos: DadosExtraidosOCR;
+}
+
+export interface ConfirmarDocumentoRequest {
+  processamentoId: string;
+  nome: string;
+  cpf: string | null;
+  tipoDocumento: string;
+}
+
+export async function processarDocumento(
+  arquivo: File
+): Promise<DocumentoProcessado> {
+  const formData = new FormData();
+  formData.append("file", arquivo);
+
+  const response = await fetch(
+    `${BASE_URL}/documentos/processar`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    const detalhe = await response.text();
+    throw new Error(
+      `Falha no OCR (${response.status}): ${detalhe.slice(0, 300)}`
+    );
+  }
+
+  return response.json();
+}
+
+export async function confirmarDocumento(
+  request: ConfirmarDocumentoRequest
+): Promise<Documento> {
+  const response = await fetch(
+    `${BASE_URL}/documentos/confirmar`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+    }
+  );
+
+  if (!response.ok) {
+    const detalhe = await response.text();
+    throw new Error(
+      `Falha na confirmação (${response.status}): ${detalhe.slice(0, 300)}`
+    );
+  }
+
+  const documento: DocumentoBackend = await response.json();
+
+  return mapDocumento(documento);
+}
+
+
 interface DocumentoBackend {
   id: number;
   nome: string;

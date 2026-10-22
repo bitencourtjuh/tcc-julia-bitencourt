@@ -1,86 +1,180 @@
-import { useState, useRef } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Button } from "./ui/button";
-import { Upload, FileText, CheckCircle2, Loader2, X } from "lucide-react";
-import { Badge } from "./ui/badge";
-import { Progress } from "./ui/progress";
+
+import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "motion/react";
+import { Upload, FileText, Loader2, CheckCircle2 } from "lucide-react";
+
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import { useApp } from "../context/AppContext";
-import { uploadDocumento } from "../services/api";
 
-const STAGE_LABELS: Record<string, string> = {
-  upload: "Enviando arquivo...",
-  ia: "IA extraindo dados do documento...",
-  blockchain: "Registrando na blockchain...",
-  done: "Concluído!",
-};
+import {
+  processarDocumento,
+  confirmarDocumento,
+} from "../services/api";
 
-const STAGE_PROGRESS: Record<string, number> = {
-  idle: 0, upload: 30, ia: 65, blockchain: 90, done: 100,
-};
+import type { DocumentoProcessado } from "../services/api";
+
+type Stage =
+  | "idle"
+  | "processing"
+  | "review"
+  | "confirming"
+  | "done";
 
 export function DocumentUploadCard() {
   const { dispatch } = useApp();
-  const [arquivo, setArquivo] = useState<File | null>(null);
-  const [stage, setStage] = useState<string>("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    if (f.size > 10 * 1024 * 1024) {
-      toast.error("Arquivo muito grande. Máximo: 10 MB.");
+  const [arquivo, setArquivo] = useState<File | null>(null);
+  const [stage, setStage] = useState<Stage>("idle");
+  const [processado, setProcessado] =
+    useState<DocumentoProcessado | null>(null);
+
+  const [erro, setErro] = useState<string | null>(null);
+
+  const [campos, setCampos] = useState({
+    nome: "",
+    cpf: "",
+    tipoDocumento: "",
+  });
+
+  const busy =
+    stage === "processing" || stage === "confirming";
+
+  function handleFileChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!/\.(pdf|png|jpg|jpeg)$/i.test(file.name)) {
+      toast.error("Formato não suportado.");
+      event.target.value = "";
       return;
     }
-    setArquivo(f);
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("O arquivo deve ter no máximo 10 MB.");
+      event.target.value = "";
+      return;
+    }
+
+    setArquivo(file);
+    setProcessado(null);
+    setErro(null);
+    setStage("idle");
   }
 
-  async function handleUpload() {
-    if (!arquivo) return;
-    dispatch({ type: "SET_UPLOAD_STAGE", payload: "upload" });
-    setStage("upload");
+  async function handleProcessar() {
+    if (!arquivo || busy) return;
+
+    setStage("processing");
+    setErro(null);
+
+    dispatch({ type: "SET_UPLOAD_STAGE", payload: "ia" });
 
     try {
-      const resp = await uploadDocumento(arquivo, (s) => {
-        setStage(s);
-        dispatch({ type: "SET_UPLOAD_STAGE", payload: s as any });
+      const resultado = await processarDocumento(arquivo);
+
+      if (!resultado.processamentoId) {
+        throw new Error("O backend não retornou processamentoId.");
+      }
+
+      setProcessado(resultado);
+
+      setCampos({
+        nome: resultado.dadosExtraidos?.nome ?? "",
+        cpf: resultado.dadosExtraidos?.cpf ?? "",
+        tipoDocumento:
+          resultado.dadosExtraidos?.tipoDocumento ??
+          resultado.tipoDocumento ??
+          "",
       });
 
-      setStage("done");
-      dispatch({ type: "SET_UPLOAD_STAGE", payload: "done" });
-      dispatch({ type: "ADD_DOCUMENTO", payload: resp.data });
-      dispatch({ type: "SET_DOCUMENTO_ATIVO", payload: resp.data });
+      setStage("review");
+      dispatch({ type: "SET_UPLOAD_STAGE", payload: "idle" });
+
+      toast.success("OCR concluído. Revise os dados extraídos.");
+    } catch (error) {
+      const mensagem =
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao processar arquivo.";
+
+      setErro(mensagem);
+      setStage("idle");
+      dispatch({ type: "SET_UPLOAD_STAGE", payload: "error" });
+
+      toast.error("Não foi possível processar o documento.");
+    }
+  }
+
+  async function handleConfirmar() {
+    if (!processado || busy) return;
+
+    if (!campos.nome.trim() || !campos.tipoDocumento.trim()) {
+      toast.error("Nome e tipo documental são obrigatórios.");
+      return;
+    }
+
+    setStage("confirming");
+    setErro(null);
+
+    try {
+      const documento = await confirmarDocumento({
+        processamentoId: processado.processamentoId,
+        nome: campos.nome.trim(),
+        cpf: campos.cpf.trim() || null,
+        tipoDocumento: campos.tipoDocumento.trim(),
+      });
+
+      dispatch({
+        type: "ADD_DOCUMENTO",
+        payload: documento,
+      });
+
+      dispatch({
+        type: "SET_DOCUMENTO_ATIVO",
+        payload: documento,
+      });
+
+      dispatch({
+        type: "SET_UPLOAD_STAGE",
+        payload: "done",
+      });
+
       dispatch({
         type: "ADD_NOTIFICACAO",
         payload: {
-          titulo: "Documento registrado",
-          mensagem: `"${resp.data.nome}" foi validado e registrado na blockchain.`,
+          titulo: "Documento confirmado",
+          mensagem: `Documento ${documento.nome} registrado com SHA-256.`,
           tipo: "SUCESSO",
-          documentoId: resp.data.id,
+          documentoId: documento.id,
         },
       });
 
-      toast.success("Documento registrado com sucesso na blockchain!", {
-        description: `Hash: ${resp.data.blockchain?.hash.slice(0, 20)}...`,
-        icon: <CheckCircle2 className="h-5 w-5 text-green-600" />,
-      });
+      setStage("done");
+      setProcessado(null);
+      setArquivo(null);
 
-      setTimeout(() => {
-        setArquivo(null);
-        setStage("idle");
-        dispatch({ type: "SET_UPLOAD_STAGE", payload: "idle" });
-        if (fileInputRef.current) fileInputRef.current.value = "";
-      }, 2000);
-    } catch {
-      setStage("idle");
-      dispatch({ type: "SET_UPLOAD_STAGE", payload: "error" });
-      toast.error("Erro ao processar documento. Tente novamente.");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      toast.success("Documento confirmado e salvo!");
+    } catch (error) {
+      const mensagem =
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido na confirmação.";
+
+      setErro(mensagem);
+      setStage("review");
+
+      toast.error("Não foi possível confirmar o documento.");
     }
   }
-
-  const isProcessing = stage !== "idle" && stage !== "done";
-  const isDone = stage === "done";
 
   return (
     <Card className="shadow-lg border-border">
@@ -90,106 +184,148 @@ export function DocumentUploadCard() {
           Upload de Documento
         </CardTitle>
         <CardDescription>
-          Envie o documento para extração de dados pela IA e registro na blockchain
+          Envie um documento, revise os dados extraídos e
+          confirme o registro.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+
+      <CardContent className="space-y-5">
         <input
           ref={fileInputRef}
           type="file"
+          accept=".pdf,.png,.jpg,.jpeg"
           className="hidden"
-          accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+          disabled={busy}
           onChange={handleFileChange}
-          disabled={isProcessing}
         />
 
-        {/* Arquivo selecionado */}
-        <AnimatePresence>
-          {arquivo && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="flex items-center gap-2 p-3 bg-[#e9e1d1] rounded-lg border border-[#5E1F38]/20"
+        <Button
+          variant="outline"
+          className="w-full"
+          disabled={busy}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <FileText className="mr-2 h-4 w-4" />
+          {arquivo ? arquivo.name : "Selecionar documento"}
+        </Button>
+
+        {arquivo && stage === "idle" && (
+          <Button
+            className="w-full bg-[#5E1F38] text-white"
+            onClick={handleProcessar}
+          >
+            Processar com OCR
+          </Button>
+        )}
+
+        {stage === "processing" && (
+          <p className="flex items-center gap-2 text-sm">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Extraindo informações com PaddleOCR...
+          </p>
+        )}
+
+        {processado && (
+          <div className="space-y-4 border-t pt-4">
+            <h3 className="font-semibold">
+              Revisão humana dos dados
+            </h3>
+
+            <p className="text-sm text-muted-foreground">
+              Corrija os campos abaixo antes de confirmar.
+            </p>
+
+            <div className="space-y-2">
+              <label className="text-sm">Nome completo</label>
+              <Input
+                value={campos.nome}
+                disabled={busy}
+                onChange={(e) =>
+                  setCampos((c) => ({
+                    ...c,
+                    nome: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm">
+                CPF (opcional)
+              </label>
+              <Input
+                value={campos.cpf}
+                disabled={busy}
+                onChange={(e) =>
+                  setCampos((c) => ({
+                    ...c,
+                    cpf: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm">
+                Tipo documental
+              </label>
+              <Input
+                value={campos.tipoDocumento}
+                disabled={busy}
+                onChange={(e) =>
+                  setCampos((c) => ({
+                    ...c,
+                    tipoDocumento: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm">
+                Texto original extraído pelo OCR
+              </label>
+              <textarea
+                value={processado.textoExtraido}
+                readOnly
+                rows={6}
+                className="w-full rounded-lg border bg-gray-50 p-3 text-sm"
+              />
+            </div>
+
+            <Button
+              className="w-full bg-[#5E1F38] text-white"
+              disabled={busy}
+              onClick={handleConfirmar}
             >
-              <FileText className="h-4 w-4 text-[#5E1F38] flex-shrink-0" />
-              <span className="text-sm flex-1 truncate">{arquivo.name}</span>
-              <span className="text-xs text-muted-foreground flex-shrink-0">
-                {(arquivo.size / 1024).toFixed(0)} KB
-              </span>
-              {!isProcessing && (
-                <button
-                  onClick={() => { setArquivo(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
-                  className="text-muted-foreground hover:text-red-500 transition-colors"
-                >
-                  <X className="h-4 w-4" />
-                </button>
+              {stage === "confirming" ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Confirmando...
+                </>
+              ) : (
+                "Confirmar e registrar documento"
               )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </Button>
+          </div>
+        )}
 
-        {/* Progresso */}
-        <AnimatePresence>
-          {(isProcessing || isDone) && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="space-y-2"
-            >
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{STAGE_LABELS[stage]}</span>
-                <span className="font-medium">{STAGE_PROGRESS[stage]}%</span>
-              </div>
-              <Progress value={STAGE_PROGRESS[stage]} className="h-2" />
-              <div className="flex gap-2">
-                {["upload", "ia", "blockchain"].map((s, i) => {
-                  const stages = ["upload", "ia", "blockchain", "done"];
-                  const currentIdx = stages.indexOf(stage);
-                  const done = currentIdx > i;
-                  const active = stages[i] === stage;
-                  return (
-                    <div key={s} className="flex-1 flex flex-col items-center gap-1">
-                      <div className={`h-2 w-full rounded-full transition-colors duration-500 ${
-                        done ? "bg-[#5E1F38]" : active ? "bg-[#5E1F38]/50 animate-pulse" : "bg-gray-200"
-                      }`} />
-                      <span className="text-[10px] text-muted-foreground capitalize">{s === "ia" ? "IA" : s === "blockchain" ? "Blockchain" : "Upload"}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {stage === "done" && (
+          <p className="flex items-center gap-2 text-green-700">
+            <CheckCircle2 className="h-5 w-5" />
+            Documento registrado com sucesso.
+          </p>
+        )}
 
-        {/* Botões */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Button
-            variant="outline" className="flex-1"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isProcessing}
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            {arquivo ? "Trocar Arquivo" : "Selecionar Arquivo"}
-          </Button>
-          <Button
-            className="flex-1 bg-[#b28a4a] hover:bg-[#9c7a43] text-white"
-            onClick={handleUpload}
-            disabled={!arquivo || isProcessing}
-          >
-            {isProcessing ? (
-              <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processando...</>
-            ) : isDone ? (
-              <><CheckCircle2 className="mr-2 h-4 w-4" />Concluído</>
-            ) : (
-              "Enviar e Registrar"
-            )}
-          </Button>
-        </div>
+        {erro && (
+          <p role="alert" className="text-sm text-red-600 break-words">
+            {erro}
+          </p>
+        )}
 
         <p className="text-xs text-muted-foreground">
-          Formatos: PDF, DOCX, PNG, JPEG · Máx. 10 MB
+          Formatos aceitos: PDF, PNG, JPG e JPEG.
+          Tamanho máximo: 10 MB.
         </p>
       </CardContent>
     </Card>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { DocumentUploadCard } from "./DocumentUploadCard";
 import { ExtractedDataCard } from "./ExtractedDataCard";
-import { BlockchainCard } from "./BlockchainCard";
+// import { BlockchainCard } from "./BlockchainCard";
 import { DocumentPreviewCard } from "./DocumentPreviewCard";
 import { AuthenticationCard } from "./AuthenticationCard";
 import { StatsCards } from "./StatsCards";
@@ -64,7 +64,9 @@ export function Dashboard() {
         <AuthenticationCard />
       </div>
       <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <div className="space-y-5"><ExtractedDataCard /><BlockchainCard /></div>
+        <div className="space-y-5">
+          <ExtractedDataCard />
+        </div>
         <DocumentPreviewCard />
       </div>
     </motion.div>
