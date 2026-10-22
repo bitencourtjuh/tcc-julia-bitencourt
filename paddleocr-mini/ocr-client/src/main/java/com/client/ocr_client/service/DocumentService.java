@@ -7,8 +7,6 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,6 +17,7 @@ import com.client.ocr_client.dto.OCRPage;
 import com.client.ocr_client.dto.OCRResponse;
 import com.client.ocr_client.entity.Auditoria;
 import com.client.ocr_client.entity.Document;
+import com.client.ocr_client.entity.DocumentDraft;
 import com.client.ocr_client.entity.Validacao;
 import com.client.ocr_client.repository.AuditoriaRepository;
 import com.client.ocr_client.repository.DocumentoRepository;
@@ -131,8 +130,16 @@ public class DocumentService {
             );
         }
 
-        DocumentDraftStore.Draft draft
-                = documentDraftStore.find(request.processamentoId());
+        DocumentDraft draft = documentDraftStore.findForConfirmation(
+                request.processamentoId()
+        );
+
+        if (!"AGUARDANDO".equals(draft.getStatus())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Este documento já foi confirmado."
+            );
+        }
 
         if (draft == null) {
             throw new ResponseStatusException(
@@ -184,17 +191,9 @@ public class DocumentService {
         // Remoção do rascunho temporário depois da persistência.
         UUID processamentoId = request.processamentoId();
 
-        TransactionSynchronizationManager.registerSynchronization(
-                new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                documentDraftStore.remove(processamentoId);
-            }
-        }
-        );
+        draft.confirmar(salvo.getId());
 
         return salvo;
-
     }
 
     public List<Document> findAll() {
