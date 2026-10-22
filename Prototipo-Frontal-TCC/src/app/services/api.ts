@@ -239,12 +239,11 @@ export async function verifyDocumentIntegrity(
 
   if (!response.ok) {
     throw new Error(
-      `Erro ao verificar integridade: HTTP ${response.status}`
+      `Falha na verificação: HTTP ${response.status}`
     );
   }
 
-  const data: DocumentIntegrity = await response.json();
-  return data;
+  return response.json();
 }
 
 
