@@ -8,8 +8,18 @@ import { Separator } from "./ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { motion, AnimatePresence } from "motion/react";
 import { useApp, useDocumentos } from "../context/AppContext";
-import { getDocumentos, getDocumentHistory} from "../services/api";
-import type { Documento, DocumentHistory } from "../services/api";
+import {
+  getDocumentos,
+  getDocumentHistory,
+  verifyDocumentIntegrity
+} from "../services/api";
+
+import type {
+  Documento,
+  DocumentHistory,
+  DocumentIntegrity
+} from "../services/api";
+
 
 type StatusFilter = "TODOS" | "VALIDADO" | "EM_PROCESSO" | "AGUARDANDO" | "REJEITADO";
 
@@ -27,6 +37,11 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
 
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
+  const [integrity, setIntegrity] = useState<DocumentIntegrity | null>(null);
+
+  const [verifying, setVerifying] = useState(false);
+  
+  const [verificationError, setVerificationError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!doc) {
@@ -59,6 +74,30 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
       active = false;
     };
   }, [doc?.id]);
+
+  useEffect(() => {
+    setIntegrity(null);
+    setVerificationError(null);
+  }, [doc?.id]);
+
+  // 5. PUT handleVerify HERE
+  async function handleVerify() {
+    if (!doc) return;
+
+    setVerifying(true);
+    setIntegrity(null);
+    setVerificationError(null);
+
+    try {
+      const result = await verifyDocumentIntegrity(doc.id);
+      setIntegrity(result);
+    } catch (error) {
+      console.error(error);
+      setVerificationError("Não foi possível verificar a integridade.");
+    } finally {
+      setVerifying(false);
+    }
+  }
 
   return (
     <Dialog open={!!doc} onOpenChange={onClose}>
@@ -163,7 +202,7 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
                   </div>
                 </>
               )}
-              
+
               <Separator />
                 <section className="space-y-4">
                   <h3 className="font-semibold">
@@ -187,6 +226,43 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
                     </>
                   )}
                 </section>
+                <div className="space-y-3 border-t pt-4">
+
+                <h3 className="font-semibold">
+                  Verificação de Integridade
+                </h3>
+
+                <Button
+                  onClick={handleVerify}
+                  disabled={verifying}
+                >
+                  {verifying ? "Verificando..." : "Verificar SHA-256"}
+                </Button>
+
+                {integrity && (
+                  <div className="rounded-lg border p-3 space-y-2">
+                    <p
+                      className={
+                        integrity.integro
+                          ? "font-medium text-green-700"
+                          : "font-medium text-red-700"
+                      }
+                    >
+                      {integrity.integro
+                        ? "Integridade dos metadados confirmada"
+                        : "Divergência de integridade detectada"}
+                    </p>
+
+                    <p className="text-xs break-all font-mono">
+                      Hash registrado: {integrity.hashRegistrado ?? "Ausente"}
+                    </p>
+
+                    <p className="text-xs break-all font-mono">
+                      Hash calculado: {integrity.hashCalculado}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </>
         )}

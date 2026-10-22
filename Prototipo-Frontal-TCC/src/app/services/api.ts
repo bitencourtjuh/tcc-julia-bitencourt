@@ -147,6 +147,31 @@ export interface DocumentHistory {
   auditorias: AuditEntry[];
 }
 
+
+export interface DocumentIntegrity {
+  documentoId: number;
+  integro: boolean;
+  hashRegistrado: string | null;
+  hashCalculado: string;
+}
+
+export async function verifyDocumentIntegrity(
+  documentId: number
+): Promise<DocumentIntegrity> {
+  const response = await fetch(
+    `${BASE_URL}/documentos/${documentId}/verificar-integridade`
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao verificar integridade: HTTP ${response.status}`
+    );
+  }
+
+  return response.json();
+}
+
+
 // ─── Mock DB ──────────────────────────────────────────────────────────────────
 
 const USUARIOS_MOCK: Record<string, Usuario> = {
