@@ -15,6 +15,7 @@ import com.client.ocr_client.dto.DadosExtraidos;
 import com.client.ocr_client.dto.DocumentHistoryResponse;
 import com.client.ocr_client.dto.DocumentHistoryResponse.AuditEntry;
 import com.client.ocr_client.dto.DocumentHistoryResponse.ValidationEntry;
+import com.client.ocr_client.dto.DocumentIntegrityResponse;
 import com.client.ocr_client.dto.DocumentProcessResponse;
 import com.client.ocr_client.dto.OCRPage;
 import com.client.ocr_client.dto.OCRResponse;
@@ -37,6 +38,7 @@ public class DocumentService {
     private final CpfValidator cpfValidator;
     private final ValidacaoRepository validacaoRepository;
     private final AuditoriaRepository auditoriaRepository;
+    private final DocumentCanonicalizer canonicalizer;
 
     public DocumentService(
             OcrClient ocrClient,
@@ -46,7 +48,8 @@ public class DocumentService {
             DocumentDraftStore documentDraftStore,
             CpfValidator cpfValidator,
             ValidacaoRepository validacaoRepository,
-            AuditoriaRepository auditoriaRepository) {
+            AuditoriaRepository auditoriaRepository,
+            DocumentCanonicalizer canonicalizer) {
         this.ocrClient = ocrClient;
         this.documentExtractor = documentExtractor;
         this.documentoRepository = documentoRepository;
@@ -55,6 +58,7 @@ public class DocumentService {
         this.cpfValidator = cpfValidator;
         this.validacaoRepository = validacaoRepository;
         this.auditoriaRepository = auditoriaRepository;
+        this.canonicalizer = canonicalizer;
     }
 
     public DocumentProcessResponse processar(
@@ -163,10 +167,11 @@ public class DocumentService {
         document.setDataCadastro(LocalDateTime.now());
         document.setStatus("VALIDADO");
 
-        String conteudoCanonico
-                = "nome=" + nome.length() + ":" + nome
-                + "|cpf=" + (cpf == null ? "-" : cpf)
-                + "|tipo=" + tipo.length() + ":" + tipo;
+        String conteudoCanonico = canonicalizer.canonicalize(
+                nome,
+                cpf,
+                tipo
+        );
 
         document.setHashSha256(hashService.gerarHash(conteudoCanonico));
 
@@ -250,6 +255,37 @@ public class DocumentService {
                 document.getHashSha256(),
                 validations,
                 audits
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public DocumentIntegrityResponse verifyIntegrity(Long id) {
+
+        Document document = documentoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Documento não encontrado."
+                ));
+
+        String conteudoCanonico = canonicalizer.canonicalize(
+                document.getNome(),
+                document.getCpf(),
+                document.getTipoDocumento()
+        );
+
+        String hashCalculado
+                = hashService.gerarHash(conteudoCanonico);
+
+        String hashRegistrado = document.getHashSha256();
+
+        boolean integro = hashRegistrado != null
+                && hashRegistrado.equalsIgnoreCase(hashCalculado);
+
+        return new DocumentIntegrityResponse(
+                document.getId(),
+                integro,
+                hashRegistrado,
+                hashCalculado
         );
     }
 

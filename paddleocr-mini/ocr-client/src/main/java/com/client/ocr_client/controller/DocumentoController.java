@@ -20,6 +20,7 @@ import com.client.ocr_client.dto.DocumentHistoryResponse;
 import com.client.ocr_client.dto.DocumentProcessResponse;
 import com.client.ocr_client.entity.Document;
 import com.client.ocr_client.service.DocumentService;
+import com.client.ocr_client.dto.DocumentIntegrityResponse;
 
 @RestController
 @RequestMapping("/api/documentos")
@@ -103,4 +104,10 @@ public class DocumentoController {
         return documentService.findHistory(id);
     }
 
+    @GetMapping("/{id}/verificar-integridade")
+    public DocumentIntegrityResponse verifyIntegrity(
+            @PathVariable("id") Long id
+    ) {
+        return documentService.verifyIntegrity(id);
+    }
 }
