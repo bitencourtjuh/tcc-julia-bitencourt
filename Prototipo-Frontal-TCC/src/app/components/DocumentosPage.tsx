@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { FileText, Calendar, User, Search, Filter, X, Blocks, Brain, Eye, ChevronDown, Loader2 } from "lucide-react";
 import { Input } from "./ui/input";
@@ -8,8 +8,18 @@ import { Separator } from "./ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { motion, AnimatePresence } from "motion/react";
 import { useApp, useDocumentos } from "../context/AppContext";
-import { getDocumentos, getDocumentHistory} from "../services/api";
-import type { Documento, DocumentHistory } from "../services/api";
+
+import {
+  getDocumentos,
+  getDocumentHistory,
+  verifyDocumentIntegrity,
+} from "../services/api";
+
+import type {
+  Documento,
+  DocumentHistory,
+  DocumentIntegrity,
+} from "../services/api"
 
 type StatusFilter = "TODOS" | "VALIDADO" | "EM_PROCESSO" | "AGUARDANDO" | "REJEITADO";
 
@@ -27,6 +37,16 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
 
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
+  const [integrity, setIntegrity] =
+  useState<DocumentIntegrity | null>(null);
+
+  const [verifying, setVerifying] = useState(false);
+  const [integrityError, setIntegrityError] =
+  useState<string | null>(null);
+
+  const selectedIdRef = useRef<number | null>(null);
+  selectedIdRef.current = doc?.id ?? null;
+  
 
   useEffect(() => {
     if (!doc) {
@@ -54,11 +74,41 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
       .finally(() => {
         if (active) setLoadingHistory(false);
       });
-
     return () => {
       active = false;
     };
   }, [doc?.id]);
+
+  async function handleVerify() {
+      if (!doc || verifying) return;
+
+      const documentId = doc.id;
+
+      setVerifying(true);
+      setIntegrity(null);
+      setIntegrityError(null);
+
+      try {
+        const result = await verifyDocumentIntegrity(documentId);
+
+        // Ignoraa um resultado se outro documento foi selecionado
+        if (selectedIdRef.current === documentId) {
+          setIntegrity(result);
+        }
+      } catch (error) {
+        console.error(error);
+
+        if (selectedIdRef.current === documentId) {
+          setIntegrityError(
+            "Não foi possível verificar a integridade."
+          );
+        }
+      } finally {
+        if (selectedIdRef.current === documentId) {
+          setVerifying(false);
+        }
+      }
+    }
 
   return (
     <Dialog open={!!doc} onOpenChange={onClose}>
@@ -172,20 +222,115 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
                   </h3>
 
                   {loadingHistory && (
-                    <p>Carregando histórico...</p>
+                    <p className="text-sm text-muted-foreground">
+                      Carregando histórico...
+                    </p>
                   )}
 
                   {historyError && (
-                    <p className="text-red-600">{historyError}</p>
+                    <p role="alert" className="text-sm text-red-600">
+                      {historyError}
+                    </p>
                   )}
 
                   {history && (
                     <>
-                      <p>SHA-256: {history.hashSha256}</p>
+                      <div className="rounded-lg border p-3">
+                        <p className="text-sm font-medium">
+                          SHA-256 dos metadados confirmados
+                        </p>
+                        <p className="mt-2 break-all font-mono text-xs">
+                          {history.hashSha256 ?? "Não disponível"}
+                        </p>
+                      </div>
 
-                      {/* Validation records */}
-                      {/* Audit records */}
+                      <h4 className="font-medium">Validações</h4>
+
+                      {history.validacoes.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">
+                          Nenhuma validação registrada.
+                        </p>
+                      ) : (
+                        history.validacoes.map((v) => (
+                          <div key={v.id} className="rounded-lg border p-3">
+                            <p className="text-sm font-medium">
+                              Revisor: {v.usuario}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(v.dataValidacao).toLocaleString("pt-BR")}
+                            </p>
+                            <p className="mt-2 text-sm">
+                              {v.observacao ?? "Sem observações"}
+                            </p>
+                          </div>
+                        ))
+                      )}
+
+                      <h4 className="font-medium">Auditoria</h4>
+
+                      {history.auditorias.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">
+                          Nenhum evento registrado.
+                        </p>
+                      ) : (
+                        history.auditorias.map((a) => (
+                          <div key={a.id} className="rounded-lg border p-3">
+                            <p className="text-sm font-medium">
+                              {a.evento.replaceAll("_", " ")}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(a.dataHora).toLocaleString("pt-BR")}
+                            </p>
+                          </div>
+                        ))
+                      )}
                     </>
+                  )}
+                </section>
+
+                <Separator />
+
+                <section className="space-y-3">
+                  <h3 className="font-semibold">
+                    Verificação de Integridade
+                  </h3>
+
+                  <Button
+                    type="button"
+                    onClick={handleVerify}
+                    disabled={verifying}
+                    className="bg-[#5E1F38] text-white"
+                  >
+                    {verifying ? "Verificando..." : "Verificar SHA-256"}
+                  </Button>
+
+                  {integrityError && (
+                    <p role="alert" className="text-sm text-red-600">
+                      {integrityError}
+                    </p>
+                  )}
+
+                  {integrity && (
+                    <div className="rounded-lg border p-3 space-y-2">
+                      <p
+                        className={
+                          integrity.integro
+                            ? "font-medium text-green-700"
+                            : "font-medium text-red-700"
+                        }
+                      >
+                        {integrity.integro
+                          ? "Metadados consistentes com o SHA-256 registrado"
+                          : "Divergência entre metadados e SHA-256"}
+                      </p>
+
+                      <p className="break-all font-mono text-xs">
+                        Registrado: {integrity.hashRegistrado ?? "Ausente"}
+                      </p>
+                      <p className="break-all font-mono text-xs">
+                        Calculado: {integrity.hashCalculado}
+                      </p>
+                    </div>
                   )}
                 </section>
             </div>
