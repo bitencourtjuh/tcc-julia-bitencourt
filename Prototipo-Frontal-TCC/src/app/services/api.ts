@@ -6,6 +6,7 @@ const DELAY_MS = 800;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
 export type UserRole = "ADMIN" | "TABELIAO" | "ESCREVENTE";
@@ -122,6 +123,28 @@ export interface ApiResponse<T> {
   data: T;
   status: number;
   mensagem: string;
+}
+
+export interface ValidationEntry {
+  id: number;
+  usuario: string;
+  dataValidacao: string;
+  observacao: string | null;
+}
+
+export interface AuditEntry {
+  id: number;
+  evento: string;
+  dataHora: string;
+}
+
+export interface DocumentHistory {
+  documentoId: number;
+  nome: string;
+  status: string;
+  hashSha256: string | null;
+  validacoes: ValidationEntry[];
+  auditorias: AuditEntry[];
 }
 
 // ─── Mock DB ──────────────────────────────────────────────────────────────────
@@ -396,4 +419,22 @@ export async function validarArquivo(arquivo: File): Promise<ApiResponse<Validac
         : "O hash do documento não corresponde a nenhum registro na blockchain.",
     },
   };
+}
+
+
+export async function getDocumentHistory(
+  documentId: number
+): Promise<DocumentHistory> {
+
+  const response = await fetch(
+    `${BASE_URL}/documentos/${documentId}/historico`
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao buscar histórico: HTTP ${response.status}`
+    );
+  }
+
+  return response.json();
 }

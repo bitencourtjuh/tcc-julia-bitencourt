@@ -8,8 +8,8 @@ import { Separator } from "./ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { motion, AnimatePresence } from "motion/react";
 import { useApp, useDocumentos } from "../context/AppContext";
-import { getDocumentos } from "../services/api";
-import type { Documento } from "../services/api";
+import { getDocumentos, getDocumentHistory} from "../services/api";
+import type { Documento, DocumentHistory } from "../services/api";
 
 type StatusFilter = "TODOS" | "VALIDADO" | "EM_PROCESSO" | "AGUARDANDO" | "REJEITADO";
 
@@ -21,6 +21,45 @@ const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
 };
 
 function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose: () => void }) {
+  
+  const [history, setHistory] =
+    useState<DocumentHistory | null>(null);
+
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!doc) {
+      setHistory(null);
+      setHistoryError(null);
+      return;
+    }
+
+    let active = true;
+
+    setHistory(null);
+    setHistoryError(null);
+    setLoadingHistory(true);
+
+    getDocumentHistory(doc.id)
+      .then((data) => {
+        if (active) setHistory(data);
+      })
+      .catch((error) => {
+        if (active) {
+          console.error(error);
+          setHistoryError("Não foi possível carregar o histórico.");
+        }
+      })
+      .finally(() => {
+        if (active) setLoadingHistory(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [doc?.id]);
+
   return (
     <Dialog open={!!doc} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -59,7 +98,6 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
                   <span className="font-medium">{doc.dataAtualizacao}</span>
                 </div>
               </div>
-
               {/* Dados Extraídos pela IA */}
               {doc.dadosExtraidos && (
                 <>
@@ -125,6 +163,30 @@ function DocumentDetailModal({ doc, onClose }: { doc: Documento | null; onClose:
                   </div>
                 </>
               )}
+              
+              <Separator />
+                <section className="space-y-4">
+                  <h3 className="font-semibold">
+                    Histórico de Validação e Auditoria
+                  </h3>
+
+                  {loadingHistory && (
+                    <p>Carregando histórico...</p>
+                  )}
+
+                  {historyError && (
+                    <p className="text-red-600">{historyError}</p>
+                  )}
+
+                  {history && (
+                    <>
+                      <p>SHA-256: {history.hashSha256}</p>
+
+                      {/* Validation records */}
+                      {/* Audit records */}
+                    </>
+                  )}
+                </section>
             </div>
           </>
         )}

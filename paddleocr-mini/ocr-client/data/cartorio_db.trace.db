@@ -264,3 +264,6 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement ".TABLES 
 .TABLES WHERE TABLE_SCHEMA = 'PUBLIC";
 
 SELECT * FROM DOCUMENTOS [42000-240]
+2026-10-21 23:16:43.359834-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "AUDITORIA" not found; SQL statement:
+Select * from AUDITORIA [42102-240]

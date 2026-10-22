@@ -12,6 +12,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.client.ocr_client.dto.ConfirmDocumentRequest;
 import com.client.ocr_client.dto.DadosExtraidos;
+import com.client.ocr_client.dto.DocumentHistoryResponse;
+import com.client.ocr_client.dto.DocumentHistoryResponse.AuditEntry;
+import com.client.ocr_client.dto.DocumentHistoryResponse.ValidationEntry;
 import com.client.ocr_client.dto.DocumentProcessResponse;
 import com.client.ocr_client.dto.OCRPage;
 import com.client.ocr_client.dto.OCRResponse;
@@ -201,9 +204,53 @@ public class DocumentService {
     }
 
     public Document findById(long id) {
+
         return documentoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "Documento não encontrado."
         ));
     }
+
+    @Transactional(readOnly = true)
+    public DocumentHistoryResponse findHistory(Long id) {
+
+        Document document = documentoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Documento não encontrado."
+                ));
+
+        List<ValidationEntry> validations
+                = validacaoRepository
+                        .findByDocumento_IdOrderByDataValidacaoDesc(id)
+                        .stream()
+                        .map(v -> new ValidationEntry(
+                                v.getId(),
+                                v.getUsuario(),
+                                v.getDataValidacao(),
+                                v.getObservacao()
+                        ))
+                        .toList();
+
+        List<AuditEntry> audits
+                = auditoriaRepository
+                        .findByDocumento_IdOrderByDataHoraDesc(id)
+                        .stream()
+                        .map(a -> new AuditEntry(
+                                a.getId(),
+                                a.getEvento(),
+                                a.getDataHora()
+                        ))
+                        .toList();
+
+        return new DocumentHistoryResponse(
+                document.getId(),
+                document.getNome(),
+                document.getStatus(),
+                document.getHashSha256(),
+                validations,
+                audits
+        );
+    }
+
 }

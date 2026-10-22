@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.client.ocr_client.dto.ConfirmDocumentRequest;
+import com.client.ocr_client.dto.DocumentHistoryResponse;
 import com.client.ocr_client.dto.DocumentProcessResponse;
 import com.client.ocr_client.entity.Document;
 import com.client.ocr_client.service.DocumentService;
@@ -93,6 +94,13 @@ public class DocumentoController {
     @GetMapping("/{id}")
     public Document findById(@PathVariable long id) {
         return documentService.findById(id);
+    }
+
+    @GetMapping("/{id}/historico")
+    public DocumentHistoryResponse findHistory(
+            @PathVariable("id") Long id
+    ) {
+        return documentService.findHistory(id);
     }
 
 }
