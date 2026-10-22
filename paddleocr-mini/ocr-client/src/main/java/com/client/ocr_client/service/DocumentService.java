@@ -2,6 +2,7 @@ package com.client.ocr_client.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,16 +25,19 @@ public class DocumentService {
     private final DocumentExtractor documentExtractor;
     private final DocumentoRepository documentoRepository;
     private final HashService hashService;
+    private final DocumentDraftStore documentDraftStore;
 
     public DocumentService(
             OcrClient ocrClient,
             DocumentExtractor documentExtractor,
             DocumentoRepository documentoRepository,
-            HashService hashService) {
+            HashService hashService,
+            DocumentDraftStore documentDraftStore) {
         this.ocrClient = ocrClient;
         this.documentExtractor = documentExtractor;
         this.documentoRepository = documentoRepository;
         this.hashService = hashService;
+        this.documentDraftStore = documentDraftStore;
     }
 
     public DocumentProcessResponse processar(
@@ -71,7 +75,13 @@ public class DocumentService {
 
         DadosExtraidos dados = documentExtractor.extrair(textoExtraido);
 
+        UUID processamentoId = documentDraftStore.create(
+                file.getOriginalFilename(),
+                textoExtraido
+        );
+
         return new DocumentProcessResponse(
+                processamentoId,
                 file.getOriginalFilename(),
                 dados.tipoDocumento(),
                 "AGUARDANDO",
@@ -107,6 +117,16 @@ public class DocumentService {
 
         }
 
+        DocumentDraftStore.Draft draft
+                = documentDraftStore.find(request.processamentoId());
+
+        if (draft == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Processamento OCR não encontrado."
+            );
+        }
+
         if (cpf != null && cpf.isEmpty()) {
             cpf = null;
         }
@@ -126,18 +146,21 @@ public class DocumentService {
 
         document.setHashSha256(hashService.gerarHash(conteudoCanonico));
 
-        return documentoRepository.save(document);
+        Document salvo = documentoRepository.saveAndFlush(document);
 
+        documentDraftStore.remove(request.processamentoId());
+
+        return salvo;
     }
 
-    public List<Document> findAll(){
+    public List<Document> findAll() {
         return documentoRepository.findAll();
     }
 
-    public Document findById(long id){
+    public Document findById(long id) {
         return documentoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
-            HttpStatus.NOT_FOUND,
-            "Documento não encontrado."
+                HttpStatus.NOT_FOUND,
+                "Documento não encontrado."
         ));
     }
 }

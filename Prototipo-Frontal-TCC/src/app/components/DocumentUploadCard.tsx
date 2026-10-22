@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useApp } from "../context/AppContext";
 import {
   processarDocumento,
-  confirmDocumentRequest,
+  confirmarDocumento,
   type DocumentoProcessado
 } from "../services/api";
 
@@ -82,6 +82,7 @@ export function DocumentUploadCard() {
 
     try {
       const documento = await confirmarDocumento({
+        processamentoId: resultado.processamentoId,
         nome: nome.trim(),
         cpf: cpf.trim() || null,
         tipoDocumento: tipo.trim()

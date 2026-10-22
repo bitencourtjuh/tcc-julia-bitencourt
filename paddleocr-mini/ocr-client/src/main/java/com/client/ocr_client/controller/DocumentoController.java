@@ -1,9 +1,12 @@
 package com.client.ocr_client.controller;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +19,6 @@ import com.client.ocr_client.dto.ConfirmDocumentRequest;
 import com.client.ocr_client.dto.DocumentProcessResponse;
 import com.client.ocr_client.entity.Document;
 import com.client.ocr_client.service.DocumentService;
-
-import java.util.List;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/documentos")
@@ -87,12 +86,12 @@ public class DocumentoController {
     }
 
     @GetMapping
-    public List<Document> findAll(){
+    public List<Document> findAll() {
         return documentoService.findAll();
     }
 
-    @GetMapping ("/{id}")
-    public Document findById(@PathVariable long id){
+    @GetMapping("/{id}")
+    public Document findById(@PathVariable long id) {
         return documentoService.findById(id);
     }
 

@@ -83,6 +83,7 @@ export interface Documento {
 }
 
 export interface DocumentoProcessado {
+  processamentoId: string;
   nomeArquivo: string;
   tipoDocumento: string | null;
   status: string;
@@ -96,6 +97,7 @@ export interface DocumentoProcessado {
 }
 
 export interface ConfirmarDocumento {
+  processamentoId: string;
   nome: string;
   cpf: string | null;
   tipoDocumento: string;
