@@ -55,12 +55,10 @@ export interface Documento {
 }
 
 export interface DashboardStats {
+  totalDocumentos: number;
   totalValidados: number;
-  verificacoesHoje: number;
-  emProcessamento: number;
-  taxaSucesso: number;
-  crescimentoValidados: number;
-  crescimentoVerificacoes: number;
+  cadastradosHoje: number;
+  outrosStatus: number;
 }
 
 export interface ValidacaoResult {
@@ -357,20 +355,40 @@ export async function login(email: string, senha: string): Promise<ApiResponse<U
 }
 
 export async function getDashboardStats(): Promise<ApiResponse<DashboardStats>> {
-  await delay(400);
-  const validados = documentosMock.filter((d) => d.status === "VALIDADO").length;
-  const emProcesso = documentosMock.filter((d) => d.status === "EM_PROCESSO" || d.status === "AGUARDANDO").length;
+  const response = await fetch(`${BASE_URL}/documentos`);
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao carregar estatísticas: HTTP ${response.status}`
+    );
+  }
+
+  const documentos: DocumentoBackend[] = await response.json();
+
+  const hoje = new Date();
+  const dataHoje = [
+    hoje.getFullYear(),
+    String(hoje.getMonth() + 1).padStart(2, "0"),
+    String(hoje.getDate()).padStart(2, "0"),
+  ].join("-");
+
+  const totalValidados = documentos.filter(
+    (doc) => doc.status === "VALIDADO"
+  ).length;
+
+  const cadastradosHoje = documentos.filter(
+    (doc) => doc.dataCadastro?.startsWith(dataHoje)
+  ).length;
+
   return {
-    status: 200,
-    mensagem: "OK",
     data: {
-      totalValidados: validados + 1244,
-      verificacoesHoje: 89 + validados,
-      emProcessamento: emProcesso + 21,
-      taxaSucesso: 98.5,
-      crescimentoValidados: 12,
-      crescimentoVerificacoes: 8,
+      totalDocumentos: documentos.length,
+      totalValidados,
+      cadastradosHoje,
+      outrosStatus: documentos.length - totalValidados,
     },
+    status: response.status,
+    mensagem: "Estatísticas carregadas com sucesso.",
   };
 }
 
