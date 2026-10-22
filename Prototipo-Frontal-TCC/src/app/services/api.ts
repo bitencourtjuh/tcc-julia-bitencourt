@@ -301,8 +301,22 @@ export async function confirmarDocumento(
 }
 
 export async function getDocumentos(): Promise<ApiResponse<Documento[]>> {
-  await delay(DELAY_MS);
-  return { data: [...documentosMock], status: 200, mensagem: "OK" };
+  const response = await fetch(`${BASE_URL}/documentos`);
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao buscar documentos: HTTP ${response.status}`
+    );
+  }
+
+  const documentosBackend: DocumentoBackend[] =
+    await response.json();
+
+  return {
+    data: documentosBackend.map(mapDocumento),
+    status: response.status,
+    mensagem: "Documentos carregados com sucesso."
+  };
 }
 
 export async function uploadDocumento(
