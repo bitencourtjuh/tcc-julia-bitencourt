@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,8 +17,12 @@ import com.client.ocr_client.dto.DadosExtraidos;
 import com.client.ocr_client.dto.DocumentProcessResponse;
 import com.client.ocr_client.dto.OCRPage;
 import com.client.ocr_client.dto.OCRResponse;
+import com.client.ocr_client.entity.Auditoria;
 import com.client.ocr_client.entity.Document;
+import com.client.ocr_client.entity.Validacao;
+import com.client.ocr_client.repository.AuditoriaRepository;
 import com.client.ocr_client.repository.DocumentoRepository;
+import com.client.ocr_client.repository.ValidacaoRepository;
 
 @Service
 public class DocumentService {
@@ -27,6 +33,8 @@ public class DocumentService {
     private final HashService hashService;
     private final DocumentDraftStore documentDraftStore;
     private final CpfValidator cpfValidator;
+    private final ValidacaoRepository validacaoRepository;
+    private final AuditoriaRepository auditoriaRepository;
 
     public DocumentService(
             OcrClient ocrClient,
@@ -34,13 +42,17 @@ public class DocumentService {
             DocumentoRepository documentoRepository,
             HashService hashService,
             DocumentDraftStore documentDraftStore,
-            CpfValidator cpfValidator) {
+            CpfValidator cpfValidator,
+            ValidacaoRepository validacaoRepository,
+            AuditoriaRepository auditoriaRepository) {
         this.ocrClient = ocrClient;
         this.documentExtractor = documentExtractor;
         this.documentoRepository = documentoRepository;
         this.hashService = hashService;
         this.documentDraftStore = documentDraftStore;
         this.cpfValidator = cpfValidator;
+        this.validacaoRepository = validacaoRepository;
+        this.auditoriaRepository = auditoriaRepository;
     }
 
     public DocumentProcessResponse processar(
@@ -148,11 +160,41 @@ public class DocumentService {
 
         document.setHashSha256(hashService.gerarHash(conteudoCanonico));
 
-        Document salvo = documentoRepository.saveAndFlush(document);
+        Document salvo = documentoRepository.save(document);
 
-        documentDraftStore.remove(request.processamentoId());
+        // Record para verificação
+        Validacao validacao = new Validacao();
+        validacao.setDocumento(salvo);
+        validacao.setDataValidacao(LocalDateTime.now());
+        validacao.setUsuario("NAO_AUTENTICADO");
+        validacao.setObservacao(
+                "Dados confirmados via API. "
+                + "Identidade do revisor ainda não autenticada."
+        );
+
+        validacaoRepository.save(validacao);
+
+        Auditoria auditoria = new Auditoria();
+        auditoria.setDocumento(salvo);
+        auditoria.setEvento("DOCUMENTO_CONFIRMADO");
+        auditoria.setDataHora(LocalDateTime.now());
+
+        auditoriaRepository.save(auditoria);
+
+        // Remoção do rascunho temporário depois da persistência.
+        UUID processamentoId = request.processamentoId();
+
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                documentDraftStore.remove(processamentoId);
+            }
+        }
+        );
 
         return salvo;
+
     }
 
     public List<Document> findAll() {
