@@ -27,7 +27,7 @@ export function StatsCards() {
       })
       .catch((err) => {
         console.error(err);
-
+        
         if (active) {
           setError("Não foi possível carregar as estatísticas.");
           setStats(null);
