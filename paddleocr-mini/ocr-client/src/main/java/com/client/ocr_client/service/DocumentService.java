@@ -26,18 +26,21 @@ public class DocumentService {
     private final DocumentoRepository documentoRepository;
     private final HashService hashService;
     private final DocumentDraftStore documentDraftStore;
+    private final CpfValidator cpfValidator;
 
     public DocumentService(
             OcrClient ocrClient,
             DocumentExtractor documentExtractor,
             DocumentoRepository documentoRepository,
             HashService hashService,
-            DocumentDraftStore documentDraftStore) {
+            DocumentDraftStore documentDraftStore,
+            CpfValidator cpfValidator) {
         this.ocrClient = ocrClient;
         this.documentExtractor = documentExtractor;
         this.documentoRepository = documentoRepository;
         this.hashService = hashService;
         this.documentDraftStore = documentDraftStore;
+        this.cpfValidator = cpfValidator;
     }
 
     public DocumentProcessResponse processar(
@@ -109,12 +112,11 @@ public class DocumentService {
 
         String cpf = request.cpf() == null ? null : request.cpf().replaceAll("\\D", "");
 
-        if (cpf != null && !cpf.isEmpty() && !cpf.matches("\\d{11}")) {
-
+        if (cpf != null && !cpf.isBlank() && !cpfValidator.isValid(cpf)) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "CPF deve conter 11 dígitos."
+                    HttpStatus.BAD_REQUEST,
+                    "CPF inválido. Verifique os dígitos informados."
             );
-
         }
 
         DocumentDraftStore.Draft draft
