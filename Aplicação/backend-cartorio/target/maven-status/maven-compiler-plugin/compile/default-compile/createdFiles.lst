@@ -1,0 +1,4 @@
+com\example\demo\DemoApplication.class
+model\Documento.class
+service\DocumentoService.class
+repository\DocumentoRepository.class

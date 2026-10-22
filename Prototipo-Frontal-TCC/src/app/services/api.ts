@@ -6,7 +6,6 @@ const DELAY_MS = 800;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
 export type UserRole = "ADMIN" | "TABELIAO" | "ESCREVENTE";
@@ -32,34 +31,6 @@ export interface DadosExtraidos {
   confianca: number;
 }
 
-interface DocumentoBackend {
-  id: number;
-  nome: string;
-  cpf: string | null;
-  tipoDocumento: string | null;
-  dataCadastro: string | null;
-  status: DocumentStatus;
-  hashSha256: string | null;
-}
-
-function mapDocumento(doc: DocumentoBackend): Documento {
-  const data = doc.dataCadastro
-    ? new Date(doc.dataCadastro).toLocaleString("pt-BR")
-    : "Não informada";
-
-  return {
-    id: doc.id,
-    nome: doc.nome,
-    tipo: doc.tipoDocumento ?? "Não identificado",
-    status: doc.status,
-    dataCriacao: data,
-    dataAtualizacao: data,
-    usuario: "Não informado",
-    usuarioId: 0,
-    tamanho: "Não informado"
-  };
-}
-
 export interface RegistroBlockchain {
   hash: string;
   transacaoId: string;
@@ -81,27 +52,6 @@ export interface Documento {
   tamanho: string;
   dadosExtraidos?: DadosExtraidos;
   blockchain?: RegistroBlockchain;
-}
-
-export interface DocumentoProcessado {
-  processamentoId: string;
-  nomeArquivo: string;
-  tipoDocumento: string | null;
-  status: string;
-  textoExtraido: string;
-  dadosExtraidos: {
-    nome: string | null;
-    cpf: string | null;
-    dataNascimento: string | null;
-    tipoDocumento: string | null;
-  };
-}
-
-export interface ConfirmarDocumento {
-  processamentoId: string;
-  nome: string;
-  cpf: string | null;
-  tipoDocumento: string;
 }
 
 export interface DashboardStats {
@@ -146,31 +96,6 @@ export interface DocumentHistory {
   validacoes: ValidationEntry[];
   auditorias: AuditEntry[];
 }
-
-
-export interface DocumentIntegrity {
-  documentoId: number;
-  integro: boolean;
-  hashRegistrado: string | null;
-  hashCalculado: string;
-}
-
-export async function verifyDocumentIntegrity(
-  documentId: number
-): Promise<DocumentIntegrity> {
-  const response = await fetch(
-    `${BASE_URL}/documentos/${documentId}/verificar-integridade`
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      `Erro ao verificar integridade: HTTP ${response.status}`
-    );
-  }
-
-  return response.json();
-}
-
 
 // ─── Mock DB ──────────────────────────────────────────────────────────────────
 
@@ -300,73 +225,9 @@ export async function getDashboardStats(): Promise<ApiResponse<DashboardStats>> 
   };
 }
 
-export async function processarDocumento(
-  arquivo: File
-): Promise<DocumentoProcessado> {
-  const formData = new FormData();
-  formData.append("file", arquivo);
-
-  const response = await fetch(
-    `${BASE_URL}/documentos/processar`,
-    {
-      method: "POST",
-      body: formData
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      `Erro ao processar documento: HTTP ${response.status}`
-    );
-  }
-
-  return response.json();
-}
-
-
-export async function confirmarDocumento(
-  dados: ConfirmarDocumento
-): Promise<Documento> {
-  const response = await fetch(
-    `${BASE_URL}/documentos/confirmar`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(dados)
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      `Erro ao confirmar documento: HTTP ${response.status}`
-    );
-  }
-
-  const documentoBackend: DocumentoBackend =
-    await response.json();
-
-  return mapDocumento(documentoBackend);
-}
-
 export async function getDocumentos(): Promise<ApiResponse<Documento[]>> {
-  const response = await fetch(`${BASE_URL}/documentos`);
-
-  if (!response.ok) {
-    throw new Error(
-      `Erro ao buscar documentos: HTTP ${response.status}`
-    );
-  }
-
-  const documentosBackend: DocumentoBackend[] =
-    await response.json();
-
-  return {
-    data: documentosBackend.map(mapDocumento),
-    status: response.status,
-    mensagem: "Documentos carregados com sucesso."
-  };
+  await delay(DELAY_MS);
+  return { data: [...documentosMock], status: 200, mensagem: "OK" };
 }
 
 export async function uploadDocumento(
@@ -444,22 +305,4 @@ export async function validarArquivo(arquivo: File): Promise<ApiResponse<Validac
         : "O hash do documento não corresponde a nenhum registro na blockchain.",
     },
   };
-}
-
-
-export async function getDocumentHistory(
-  documentId: number
-): Promise<DocumentHistory> {
-
-  const response = await fetch(
-    `${BASE_URL}/documentos/${documentId}/historico`
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      `Erro ao buscar histórico: HTTP ${response.status}`
-    );
-  }
-
-  return response.json();
 }
