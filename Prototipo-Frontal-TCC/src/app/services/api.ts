@@ -306,3 +306,19 @@ export async function validarArquivo(arquivo: File): Promise<ApiResponse<Validac
     },
   };
 }
+
+export async function getDocumentHistory(
+  documentId: number
+): Promise<DocumentHistory> {
+  const response = await fetch(
+    `${BASE_URL}/documentos/${documentId}/historico`
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao buscar histórico: HTTP ${response.status}`
+    );
+  }
+
+  return response.json();
+}
