@@ -1,25 +1,23 @@
 
 spring:
   datasource:
-    url: jdbc:h2:file:./data/cartorio_db
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
+    url: ${DB_JDBC_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
   jpa:
-    hibernate: 
+    hibernate:
       ddl-auto: update
     open-in-view: false
+
   h2:
     console:
-      enabled: true
-      path: /h2-console
-  application:
-    name: ocr-client
-  main:
-    web-application-type: servlet
+      enabled: false
+
 server:
-  tomcat:
-    connection-timeout: 300000
+  port: ${PORT:8080}
+
 ocr:
   service:
-    url: http://127.0.0.1:8000
+    url: ${OCR_SERVICE_URL}

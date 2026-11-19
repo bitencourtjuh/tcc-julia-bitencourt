@@ -1,7 +1,9 @@
 // Simula chamadas ao backend Java Spring Boot
 // Em produção, substituir BASE_URL pela URL real do servidor
 
-const BASE_URL = "http://localhost:8080/api";
+const BASE_URL =
+  import.meta.env.VITE_API_URL ??
+  "http://localhost:8080/api";
 const DELAY_MS = 800;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));

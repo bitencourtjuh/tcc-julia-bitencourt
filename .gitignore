@@ -1,0 +1,12 @@
+.neon
+node_modules/
+.env
+.env.*
+!.env.example
+
+node_modules/
+target/
+__pycache__/
+*.pyc
+
+**/data/
