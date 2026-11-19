@@ -1,12 +1,16 @@
-.neon
-node_modules/
 .env
 .env.*
 !.env.example
 
 node_modules/
+dist/
 target/
+**/target/
+**/data/
+
 __pycache__/
 *.pyc
 
-**/data/
+*.db
+*.mv.db
+*.trace.db
