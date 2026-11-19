@@ -1,4 +1,4 @@
-fastapi;
-uvicorn[standard];
-python-multipart  0.0.32;
-paddleocr 3.7.0;
+fastapi
+uvicorn[standard]
+python-multipart==0.0.32
+paddleocr==3.7.0
