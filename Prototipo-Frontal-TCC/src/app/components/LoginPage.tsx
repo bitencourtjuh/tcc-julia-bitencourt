@@ -9,11 +9,6 @@ import { Badge } from "./ui/badge";
 import { useApp } from "../context/AppContext";
 import { login } from "../services/api";
 
-const CREDENCIAIS_DEMO = [
-  { email: "admin@cartorio.com", senha: "admin123", role: "ADMIN", label: "Administrador" },
-  { email: "tabeliao@cartorio.com", senha: "senha123", role: "TABELIAO", label: "Tabelião" },
-  { email: "escrevente@cartorio.com", senha: "senha123", role: "ESCREVENTE", label: "Escrevente" },
-];
 
 export function LoginPage() {
   const { dispatch } = useApp();
@@ -25,26 +20,34 @@ export function LoginPage() {
   const [erro, setErro] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setErro("");
-    if (!email || !senha) { setErro("Preencha e-mail e senha."); return; }
-    setCarregando(true);
-    try {
-      const resp = await login(email, senha);
-      dispatch({ type: "LOGIN", payload: resp.data });
-      navigate("/");
-    } catch (err: any) {
-      setErro(err?.mensagem || "Erro ao fazer login. Tente novamente.");
-    } finally {
-      setCarregando(false);
-    }
+  e.preventDefault();
+  setErro("");
+
+  if (!email || !senha) {
+    setErro("Preencha e-mail e senha.");
+    return;
   }
 
-  function preencherDemo(cred: typeof CREDENCIAIS_DEMO[0]) {
-    setEmail(cred.email);
-    setSenha(cred.senha);
-    setErro("");
+  setCarregando(true);
+
+  try {
+    const resp = await login(email, senha);
+
+    dispatch({
+      type: "LOGIN",
+      payload: resp.data,
+    });
+
+    navigate("/", { replace: true });
+  } catch (err: any) {
+    setErro(
+      err?.mensagem ||
+      "Erro ao fazer login. Tente novamente."
+    );
+  } finally {
+    setCarregando(false);
   }
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#5E1F38] via-[#782848] to-[#3A1322] flex items-center justify-center p-4">
@@ -85,7 +88,7 @@ export function LoginPage() {
 
           <div className="space-y-4 pt-4">
             {[
-              { icon: Shield, text: "Registro imutável na blockchain" },
+              { icon: Shield, text: "Verificação de integridade com SHA-256" },
               { icon: FileText, text: "Extração inteligente de dados por IA" },
               { icon: Lock, text: "Autenticação e criptografia de ponta" },
             ].map(({ icon: Icon, text }) => (
@@ -121,28 +124,11 @@ export function LoginPage() {
               </div>
               <CardTitle className="text-2xl">Entrar no sistema</CardTitle>
               <CardDescription>
-                Use suas credenciais institucionais para acessar
+                Utilize suas credenciais institucionais para acessar
               </CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-6">
-              {/* Credenciais demo */}
-              <div className="space-y-2">
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Acesso rápido (demo)</p>
-                <div className="flex flex-wrap gap-2">
-                  {CREDENCIAIS_DEMO.map((c) => (
-                    <button
-                      key={c.email}
-                      type="button"
-                      onClick={() => preencherDemo(c)}
-                      className="text-xs px-3 py-1.5 rounded-full border border-[#5E1F38]/30 text-[#5E1F38] hover:bg-[#e9e1d1] transition-colors"
-                    >
-                      {c.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">E-mail institucional</label>

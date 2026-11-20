@@ -8,6 +8,7 @@ import { Separator } from "./ui/separator";
 import { motion, AnimatePresence } from "motion/react";
 import { useApp, useUsuario, useNotificacoes } from "../context/AppContext";
 import { toast } from "sonner";
+import { setAccessToken } from "../services/api";
 
 interface HeaderProps { currentPage: string; onNavigate: (page: string) => void; }
 const ROLE_LABELS: Record<string,string> = { ADMIN:"Administrador", TABELIAO:"Tabelião", ESCREVENTE:"Escrevente" };
@@ -18,7 +19,15 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
   const [mobileMenuOpen,setMobileMenuOpen]=useState(false); const [notifOpen,setNotifOpen]=useState(false); const [userMenuOpen,setUserMenuOpen]=useState(false);
   const menuItems=[{label:"Visão geral",key:"dashboard"},{label:"Documentos",key:"documentos"},{ label: "Validação", key: "validacao" }];
   const naoLidas=notificacoes.filter(n=>!n.lida).length;
-  function handleLogout(){dispatch({type:"LOGOUT"});navigate("/login");toast.success("Sessão encerrada com segurança.");}
+  function handleLogout() {
+  setAccessToken(null);
+
+  dispatch({ type: "LOGOUT" });
+
+  navigate("/login", { replace: true });
+
+  toast.success("Sessão encerrada.");
+}
   return <header className="sticky top-0 z-50 border-b border-[#d9d4ca] bg-[#fffdf8]/95 backdrop-blur-xl">
     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8"><div className="flex h-[76px] items-center justify-between">
       <button onClick={()=>onNavigate("dashboard")} className="flex items-center gap-3 text-left">
