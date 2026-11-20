@@ -31,3 +31,5 @@ ocr:
 
 app:
   frontend-url: ${APP_FRONTEND_URL:http://localhost:5173}
+  jwt:
+    secret-base64: ${JWT_SECRET_BASE64}

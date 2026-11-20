@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, ReactNode } from "react";
 import type { Usuario, Documento } from "../services/api";
+import { setAccessToken } from "../services/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -45,18 +46,20 @@ function formatDate(): string {
   });
 }
 
-const initialNotificacoes: Notificacao[] = [
-  { id: 1, titulo: "Documento validado", mensagem: "Certidão de Nascimento registrada com sucesso na blockchain.", tipo: "SUCESSO", lida: false, data: "11/06/2026 14:35" },
-  { id: 2, titulo: "Novo documento recebido", mensagem: "Escritura Pública aguarda análise do tabelião.", tipo: "ALERTA", lida: false, data: "09/06/2026 11:20" },
-  { id: 3, titulo: "Relatório mensal disponível", mensagem: "O relatório de junho de 2026 está pronto para download.", tipo: "INFO", lida: true, data: "01/06/2026 08:00" },
-];
+const initialNotificacoes: Notificacao[] = [];
 
 function reducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case "LOGIN":
       return { ...state, usuario: action.payload };
     case "LOGOUT":
-      return { ...state, usuario: null, documentoAtivo: null, uploadStage: "idle" };
+    return {
+      ...state,
+      usuario: null,
+      documentos: [],
+      documentoAtivo: null,
+      uploadStage: "idle",
+    };
     case "SET_DOCUMENTOS":
       return { ...state, documentos: action.payload };
     case "ADD_DOCUMENTO":
@@ -99,9 +102,11 @@ interface AppContextValue {
 
 const AppContext = createContext<AppContextValue | null>(null);
 
-const STORAGE_KEY = "cartorio_usuario";
-
-export function AppProvider({ children }: { children: ReactNode }) {
+export function AppProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [state, dispatch] = useReducer(reducer, {
     usuario: null,
     documentos: [],
@@ -110,29 +115,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
     uploadStage: "idle",
   });
 
-  // Restaura sessão do localStorage
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const usuario: Usuario = JSON.parse(stored);
-        dispatch({ type: "LOGIN", payload: usuario });
-      }
-    } catch {
-      // sessão inválida
+    // Remove stale session data from previous demo versions.
+    localStorage.removeItem("cartorio_usuario");
+
+    function handleExpiredSession() {
+      setAccessToken(null);
+      dispatch({ type: "LOGOUT" });
     }
+
+    window.addEventListener(
+      "auth:expired",
+      handleExpiredSession
+    );
+
+    return () => {
+      window.removeEventListener(
+        "auth:expired",
+        handleExpiredSession
+      );
+    };
   }, []);
 
-  // Persiste sessão no localStorage
-  useEffect(() => {
-    if (state.usuario) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.usuario));
-    } else {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-  }, [state.usuario]);
-
-  return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={{ state, dispatch }}>
+      {children}
+    </AppContext.Provider>
+  );
 }
 
 export function useApp() {
